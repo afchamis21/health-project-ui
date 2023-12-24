@@ -25,13 +25,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      if (req.url.includes('auth/refresh')) {
+      if (error.status === 401 && !req.url.includes('auth/refresh')) {
+        return handle401Error(req, next);
+      } else if (error.status === 401) {
         handleLogout()
         return throwError(() => error);
-      }
-
-      if (error.status === 401) {
-        return handle401Error(req, next);
       }
 
       return throwError(() => error);

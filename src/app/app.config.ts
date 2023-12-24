@@ -16,6 +16,11 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([apiKeyInterceptor, authInterceptor, errorInterceptor])
     ),
     provideAnimations(),
-    provideToastr()
+    provideToastr({
+      progressBar: true,
+      newestOnTop: true,
+      maxOpened: 3,
+      autoDismiss: true
+    })
   ]
 };
