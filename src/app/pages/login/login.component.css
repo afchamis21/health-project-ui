@@ -1,0 +1,7 @@
+.input {
+  @apply border border-gray-900 rounded px-2 py-1
+}
+
+.error {
+  @apply text-red-500 text-sm
+}

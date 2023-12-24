@@ -1,0 +1,24 @@
+<form [formGroup]="loginForm" (ngSubmit)="handleLogin()" class="flex flex-col gap-2 p-2">
+  <label for="email" class="flex flex-col gap-1">
+    <input id="email" name="email" formControlName="email" placeholder="Email" autocomplete="email" class="input"/>
+    <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error">
+      Este campo é obrigatório
+    </small>
+  </label>
+  <label for="password" class="flex flex-col gap-1">
+    <input id="password" name="password" type="password" formControlName="password" placeholder="Senha"
+           autocomplete="current-password" class="input"/>
+    <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error">
+      Este campo é obrigatório
+    </small>
+  </label>
+  <button>Login</button>
+</form>
+<div>Está logado {{authService.isLoggedIn}}</div>
+<div *ngIf="user">
+  <p>{{user.email}}</p>
+  <p>{{user.isActive}}</p>
+  <p>{{user.isRegistrationComplete}}</p>
+  <p>{{user.userId}}</p>
+  <p>{{user.username}}</p>
+</div>
