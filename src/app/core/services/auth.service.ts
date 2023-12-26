@@ -10,9 +10,13 @@ import {JwtService} from "./jwt.service";
   providedIn: 'root'
 })
 export class AuthService {
+  private static ref: AuthService | null
   private baseUrl = environment.apiURL + "/auth"
 
   constructor(private httpClient: HttpClient, private jwtService: JwtService) {
+    if (!AuthService.ref) {
+      AuthService.ref = this
+    }
     if (jwtService.accessToken) {
       this.fetchCurrentUser().subscribe({
         next: response => {
@@ -36,7 +40,6 @@ export class AuthService {
     return this.httpClient.post<AuthResponse>(this.baseUrl + "/refresh", {refreshToken: this.jwtService.refreshToken}).pipe(
       tap({
         next: ({body: {accessToken, refreshToken, user}}) => {
-          console.log("Body:", accessToken, refreshToken, user)
           this.jwtService.accessToken = accessToken
           this.jwtService.refreshToken = refreshToken
         }
@@ -64,9 +67,14 @@ export class AuthService {
     this.jwtService.deleteAccessToken()
     this.jwtService.deleteRefreshToken()
     this.userSubject.next(null)
+    // TODO fazer req
   }
 
   private fetchCurrentUser() {
     return this.httpClient.get<GetUserResponse>(environment.apiURL + "/user")
+  }
+
+  public static getRef() {
+    return this.ref
   }
 }
