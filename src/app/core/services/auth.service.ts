@@ -5,6 +5,7 @@ import {AuthResponse, LoginRequest} from "../types/auth";
 import {GetUserResponse, User} from "../types/user";
 import {environment} from "../../../environments/environment";
 import {JwtService} from "./jwt.service";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   private static ref: AuthService | null
   private baseUrl = environment.apiURL + "/auth"
 
-  constructor(private httpClient: HttpClient, private jwtService: JwtService) {
+  constructor(private httpClient: HttpClient, private jwtService: JwtService, private router: Router) {
     if (!AuthService.ref) {
       AuthService.ref = this
     }
@@ -48,7 +49,7 @@ export class AuthService {
   refreshTokens() {
     return this.httpClient.post<AuthResponse>(this.baseUrl + "/refresh", {refreshToken: this.jwtService.refreshToken}).pipe(
       tap({
-        next: ({body: {accessToken, refreshToken, user}}) => {
+        next: ({body: {accessToken, refreshToken}}) => {
           this.jwtService.accessToken = accessToken
           this.jwtService.refreshToken = refreshToken
         }
@@ -63,21 +64,19 @@ export class AuthService {
           this.jwtService.accessToken = accessToken
           this.jwtService.refreshToken = refreshToken
           this.userSubject.next(user)
+          this.isLoggedInSubject.next(true)
         }
       })
     )
   }
 
   logout() {
-    this.httpClient.post(this.baseUrl + "/logout", {}).subscribe({
-        complete: () => {
-          this.jwtService.deleteAccessToken()
-          this.jwtService.deleteRefreshToken()
-          this.isLoggedInSubject.next(false)
-          this.userSubject.next(null)
-        }
-      }
-    )
+    this.jwtService.deleteAccessToken()
+    this.jwtService.deleteRefreshToken()
+    this.isLoggedInSubject.next(false)
+    this.userSubject.next(null)
+    this.httpClient.post(this.baseUrl + "/logout", {})
+    this.router.navigate(['/login'])
   }
 
   private fetchCurrentUser() {

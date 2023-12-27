@@ -1,16 +1,9 @@
-<div>
-  <header>
-    <h1>Meu Aplicativo</h1>
-  </header>
-  <nav>
-    <a routerLink="/">Home</a>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/dashboard">Dashboard</a>
-  </nav>
-  <main>
+<div class="flex flex-col min-h-screen h-[200vh] bg-slate-100 text-slate-900">
+  <app-header></app-header>
+
+  <main class="flex-1 flex flex-col">
     <router-outlet></router-outlet>
   </main>
-  <footer>
-    <p>Rodapé do Aplicativo</p>
-  </footer>
+
+  <app-footer></app-footer>
 </div>

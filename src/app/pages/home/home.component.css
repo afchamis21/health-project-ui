@@ -1,0 +1,13 @@
+.hero-banner {
+  background-image: url("https://picsum.photos/1200/800");
+  background-size: cover;
+  background-position: center;
+}
+
+.card {
+  @apply rounded-lg border shadow-sm flex-1  min-w-60
+}
+
+:host {
+  @apply flex-1 flex flex-col
+}
