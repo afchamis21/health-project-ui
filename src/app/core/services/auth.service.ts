@@ -27,9 +27,18 @@ export class AuthService {
   }
 
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)
+  private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(!!this.jwtService.accessToken)
 
   get user$() {
     return this.userSubject.asObservable()
+  }
+
+  get isLoggedIn() {
+    return this.isLoggedInSubject.value
+  }
+
+  get isLoggedIn$() {
+    return this.isLoggedInSubject.asObservable()
   }
 
   updateUser(user: User | null) {
@@ -47,10 +56,6 @@ export class AuthService {
     )
   }
 
-  get isLoggedIn() {
-    return this.jwtService.accessToken != null
-  }
-
   login(data: LoginRequest) {
     return this.httpClient.post<AuthResponse>(this.baseUrl + "/login", data).pipe(
       tap({
@@ -64,10 +69,15 @@ export class AuthService {
   }
 
   logout() {
-    this.jwtService.deleteAccessToken()
-    this.jwtService.deleteRefreshToken()
-    this.userSubject.next(null)
-    // TODO fazer req
+    this.httpClient.post(this.baseUrl + "/logout", {}).subscribe({
+        complete: () => {
+          this.jwtService.deleteAccessToken()
+          this.jwtService.deleteRefreshToken()
+          this.isLoggedInSubject.next(false)
+          this.userSubject.next(null)
+        }
+      }
+    )
   }
 
   private fetchCurrentUser() {
