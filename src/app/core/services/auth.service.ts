@@ -5,7 +5,6 @@ import {AuthResponse, LoginRequest} from "../types/auth";
 import {GetUserResponse, User} from "../types/user";
 import {environment} from "../../../environments/environment";
 import {JwtService} from "./jwt.service";
-import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class AuthService {
   private static ref: AuthService | null
   private baseUrl = environment.apiURL + "/auth"
 
-  constructor(private httpClient: HttpClient, private jwtService: JwtService, private router: Router) {
+  constructor(private httpClient: HttpClient, private jwtService: JwtService) {
     if (!AuthService.ref) {
       AuthService.ref = this
     }
@@ -75,8 +74,7 @@ export class AuthService {
     this.jwtService.deleteRefreshToken()
     this.isLoggedInSubject.next(false)
     this.userSubject.next(null)
-    this.httpClient.post(this.baseUrl + "/logout", {})
-    this.router.navigate(['/login'])
+    return this.httpClient.post(this.baseUrl + "/logout", {})
   }
 
   private fetchCurrentUser() {

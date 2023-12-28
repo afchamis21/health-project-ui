@@ -1,0 +1,13 @@
+<header
+  class="fixed top-0 px-8 py-4 z-20 w-screen text-slate-100 transition-colors transparent-header"
+  id="header"
+>
+  <div class="mx-auto container flex justify-between items-center">
+    <h1 class="font-bold text-2xl"><a routerLink="/">Meu aplicativo</a></h1>
+    <nav class="flex gap-4">
+      <a routerLink="/login" *ngIf="!isLoggedIn" class="nav-link">Login</a>
+      <button (click)="handleLogout()" *ngIf="isLoggedIn" class="nav-link">Logout</button>
+      <a routerLink="/dashboard" *ngIf="isLoggedIn" class="nav-link">Dashboard</a>
+    </nav>
+  </div>
+</header>

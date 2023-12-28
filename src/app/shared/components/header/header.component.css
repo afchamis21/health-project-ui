@@ -1,0 +1,11 @@
+.nav-link {
+  @apply hover:underline;
+}
+
+.transparent-header {
+  @apply bg-transparent text-slate-100
+}
+
+.colored-header {
+  @apply bg-slate-100 text-green-600 shadow
+}
