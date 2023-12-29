@@ -3,6 +3,7 @@ import {NavigationEnd, Router, RouterLink} from "@angular/router";
 import {AuthService} from "../../../core/services/auth.service";
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
+import {SubscriptionUtils} from "../../utils/subscription-utils";
 
 @Component({
   selector: 'app-header',
@@ -23,11 +24,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false
 
   handleLogout() {
-    this.authService.logout().subscribe({
+    const subscription = this.authService.logout().subscribe({
       next: () => {
+        this.router.navigate(['/login'])
+      },
+      error: () => {
         this.router.navigate(['/login'])
       }
     })
+
+    this.subscriptions.push(subscription)
   }
 
   ngOnInit(): void {
@@ -60,7 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe())
+    SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
   @HostListener('window:scroll')
