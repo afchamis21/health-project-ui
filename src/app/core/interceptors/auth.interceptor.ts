@@ -3,6 +3,7 @@ import {catchError, Observable, switchMap, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
 import {JwtService} from "../services/jwt.service";
 import {AuthService} from "../services/auth.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -11,6 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private jwtService: JwtService,
+    private router: Router
   ) {
     this.authService = AuthService.getRef()!
   }
@@ -24,6 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       catchError((error) => {
+        console.log("No primeiro handler", error, this.isRefreshing)
         if (!(error instanceof HttpErrorResponse)) {
           return throwError(() => error);
         }
@@ -32,7 +35,14 @@ export class AuthInterceptor implements HttpInterceptor {
           return throwError(() => error);
         }
 
-        if (req.url.includes('auth/login') || req.url.includes('auth/refresh')) {
+        if (error.status === 401 && this.isRefreshing) {
+          this.isRefreshing = false
+          this.authService?.forceLogout()
+          this.router.navigate(['/login'])
+          return throwError(() => error);
+        }
+
+        if (req.url.includes('auth/login') || req.url.includes('auth/refresh') || req.url.includes('auth/logout')) {
           return throwError(() => error);
         }
 
@@ -56,15 +66,6 @@ export class AuthInterceptor implements HttpInterceptor {
               }
             }));
           }),
-          catchError((error) => {
-            this.isRefreshing = false;
-
-            if (error.status == '401') {
-              this.authService?.logout();
-            }
-
-            return throwError(() => error);
-          })
         );
       }
     }
