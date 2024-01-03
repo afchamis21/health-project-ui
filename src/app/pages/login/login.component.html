@@ -4,9 +4,14 @@
     <form [formGroup]="loginForm" (ngSubmit)="handleLogin()"
           class="flex flex-col gap-6 max-w-md w-full">
       <label for="email" class="flex flex-col gap-0.5">
-        <input id="email" name="email" formControlName="email" placeholder="Email" autocomplete="email" class="input"/>
-        <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error">
+        <input id="email" type="email" name="email" formControlName="email" placeholder="email@email.com"
+               autocomplete="email"
+               class="input"/>
+        <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.getError('required')" class="error">
           Este campo é obrigatório
+        </small>
+        <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.getError('email')" class="error">
+          Email inválido (ex: email&#64;email.com)
         </small>
       </label>
       <label for="password" class="flex flex-col gap-0.5">
@@ -18,7 +23,7 @@
       </label>
       <button
         class="mt-4 bg-green-600 px-6 py-2 rounded-lg text-slate-50 hover:shadow-md hover:shadow-slate-400 transition-all">
-        Login
+        Entrar
       </button>
     </form>
   </div>
