@@ -1,4 +1,6 @@
 export const environment = {
   apiURL: "",
-  apiKey: ""
+  apiKey: "",
+  stripeSubscriptionId: "",
+  stripePublicKey: ""
 };

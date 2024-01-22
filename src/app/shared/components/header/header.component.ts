@@ -4,24 +4,33 @@ import {AuthService} from "../../../core/services/auth.service";
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../utils/subscription-utils";
+import {PaymentService} from "../../../core/services/payment.service";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     RouterLink,
-    NgIf
+    NgIf,
+    MatIconModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  constructor(protected authService: AuthService, private router: Router) {
+  isMenuOpen = false
+
+  constructor(protected authService: AuthService, protected paymentService: PaymentService, private router: Router) {
   }
 
   header?: HTMLElement
   subscriptions: Subscription[] = []
   isLoggedIn = false
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen
+  }
 
   handleLogout() {
     const subscription = this.authService.logout().subscribe({
@@ -81,6 +90,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.header?.classList.remove('colored-header')
       this.header?.classList.add('transparent-header')
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.isMenuOpen) {
+      this.isMenuOpen = false;
     }
   }
 

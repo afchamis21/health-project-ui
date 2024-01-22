@@ -70,18 +70,14 @@ export class AuthService {
   }
 
   logout() {
-    console.log("Chamei logout")
     return this.httpClient.post(this.baseUrl + "/logout", {}).pipe(
       tap(() => {
-        console.log("Entrou no tap")
         this.jwtService.deleteAccessToken()
         this.jwtService.deleteRefreshToken()
         this.isLoggedInSubject.next(false)
         this.userSubject.next(null)
       }),
       catchError(err => {
-        console.log("Entrou no catchError")
-
         this.jwtService.deleteAccessToken()
         this.jwtService.deleteRefreshToken()
         this.isLoggedInSubject.next(false)

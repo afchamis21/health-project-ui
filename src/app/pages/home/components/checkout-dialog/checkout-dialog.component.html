@@ -1,0 +1,35 @@
+<div class="fixed z-50 left-0 top-0 bg-slate-950 w-screen h-svh bg-opacity-80">
+  <div
+    class="flex flex-col gap-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 py-8 px-12 bg-slate-50 rounded">
+    <button (click)="closeDialog()"
+            class="outline-0 absolute top-2 right-2 leading-none text-sm hover:text-red-500 transition-colors">
+      <mat-icon>close</mat-icon>
+    </button>
+    <div class="flex flex-col gap-2">
+      <h2 class="text-2xl text-yellow-700">Que email você deseja usar ?</h2>
+      <p>Esse e-mail será importante, pois ele será usado para acessar sua conta, e nele que você
+        receberá informações
+        de pagamento </p>
+      <p class="text-sm">Essa escolha não poderá ser alterada</p>
+    </div>
+    <form [formGroup]="checkoutForm" class="flex flex-col gap-2" (submit)="submitForm()">
+      <label for="email" class="flex flex-col gap-0.5 w-full">
+        <input id="email" type="email" name="email" formControlName="email" placeholder="exemplo@email.com"
+               autocomplete="email"
+               class="input"
+        />
+        <small *ngIf="checkoutForm.get('email')?.touched && checkoutForm.get('email')?.getError('required')"
+               class="error">
+          Este campo é obrigatório
+        </small>
+        <small *ngIf="checkoutForm.get('email')?.touched && checkoutForm.get('email')?.getError('email')" class="error">
+          Email inválido (ex: email&#64;email.com)
+        </small>
+      </label>
+      <button type="submit"
+              class="mt-4 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:brightness-110 transition-all">
+        Confirmar
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 .nav-link {
-  @apply hover:underline;
+  @apply text-slate-900 transition-colors hover:underline hover:text-yellow-700 py-2;
 }
 
 .transparent-header {
@@ -7,5 +7,5 @@
 }
 
 .colored-header {
-  @apply bg-slate-100 text-green-600 shadow
+  @apply bg-slate-100 text-yellow-700 shadow
 }

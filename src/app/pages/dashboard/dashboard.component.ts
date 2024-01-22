@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
+import {AuthService} from "../../core/services/auth.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -11,15 +11,20 @@ import {Subscription} from "rxjs";
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
+  isRegistrationComplete = true
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    const subscription = this.route.queryParams.subscribe(params => {
-      console.log(params)
-    });
-    this.subscriptions.push(subscription)
+    const userSubscription = this.authService.user$.subscribe(user => {
+      if (user) {
+        this.isRegistrationComplete = user.isRegistrationComplete
+      }
+    })
+
+
+    this.subscriptions.push(userSubscription)
   }
 
   ngOnDestroy(): void {
@@ -27,5 +32,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
       subscription.unsubscribe()
     })
   }
-
 }

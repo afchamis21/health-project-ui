@@ -2,14 +2,14 @@
   @apply border-2 border-gray-900 rounded px-2 py-2 transition-colors;
 }
 
+.input:disabled {
+  @apply hover:border-gray-900 bg-slate-200 pointer-events-none
+}
+
 .input:hover, .input:focus {
   @apply border-yellow-700 outline-0
 }
 
 .error {
   @apply text-red-500 text-sm pl-2
-}
-
-:host {
-  @apply flex-1 flex flex-col items-center justify-center
 }

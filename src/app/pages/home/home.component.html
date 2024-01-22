@@ -9,9 +9,30 @@
       This is a premium app that provides excellent health solutions to enhance your well-being
     </p>
     <button
-      class="px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-green-600 transition-colors hover:text-slate-900">
+      *ngIf="!authService.isLoggedIn"
+      (click)="startCheckout()"
+      [disabled]="isGoingToCheckout"
+      class="
+      px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-blue-950 transition-colors hover:brightness-110
+      disabled:opacity-70 disabled:cursor-progress disabled:hover:brightness-100
+      ">
       Cadastre-se
     </button>
+    <button
+      *ngIf="authService.isLoggedIn && !user?.isPaymentActive"
+      (click)="startCheckout()"
+      [disabled]="isGoingToCheckout"
+      class="
+      px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-blue-950 transition-colors hover:text-yellow-600
+      disabled:opacity-70 disabled:cursor-progress disabled:hover:brightness-100
+      ">
+      Faça um upgrade!
+    </button>
+    <div
+      *ngIf="authService.isLoggedIn && user?.isPaymentActive"
+      class="px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-slate-500 pointer-events-none select-none">
+      Você já está cadastrado!
+    </div>
   </div>
 </section>
 <section class="py-16 px-4 space-y-8 flex-1 container mx-auto">

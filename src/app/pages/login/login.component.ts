@@ -57,13 +57,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     const subscription = this.authService.login(formData).subscribe({
-      next: (response) => {
+      next: () => {
         this.toastr.success("Logado com sucesso!")
-        this.router.navigate(['/dashboard'], {
-          queryParams: {
-            isRegistrationComplete: response.body.user?.isRegistrationComplete
-          }
-        })
+        this.router.navigate(['/dashboard'])
       }
     })
 

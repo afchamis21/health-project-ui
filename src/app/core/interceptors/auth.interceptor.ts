@@ -26,7 +26,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       catchError((error) => {
-        console.log("No primeiro handler", error, this.isRefreshing)
         if (!(error instanceof HttpErrorResponse)) {
           return throwError(() => error);
         }

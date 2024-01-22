@@ -12,20 +12,18 @@ import {AuthInterceptor} from "./core/interceptors/auth.interceptor";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(
-      withInterceptors([apiKeyInterceptor, errorInterceptor]),
-      withInterceptorsFromDi()
-    ),
+    provideHttpClient(withInterceptors([apiKeyInterceptor, errorInterceptor]), withInterceptorsFromDi()),
     provideAnimations(),
     provideToastr({
-      progressBar: true,
-      newestOnTop: true,
-      maxOpened: 3,
-      autoDismiss: true
+        progressBar: true,
+        newestOnTop: true,
+        maxOpened: 3,
+        autoDismiss: true
     }), {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
-  ]
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true
+    },
+    provideAnimations()
+]
 };
