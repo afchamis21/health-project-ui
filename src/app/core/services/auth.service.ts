@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthResponse, LoginRequest} from "../types/auth";
-import {GetUserResponse, User} from "../types/user";
+import {CompleteRegistrationRequest, GetUserResponse, User} from "../types/user";
 import {environment} from "../../../environments/environment";
 import {JwtService} from "./jwt.service";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   private static ref: AuthService | null
   private baseUrl = environment.apiURL + "/auth"
 
-  constructor(private httpClient: HttpClient, private jwtService: JwtService) {
+  constructor(private httpClient: HttpClient, private jwtService: JwtService, private router: Router) {
     if (!AuthService.ref) {
       AuthService.ref = this
     }
@@ -87,11 +88,25 @@ export class AuthService {
     )
   }
 
+  completeRegistration(request: CompleteRegistrationRequest) {
+    return this.httpClient.put<GetUserResponse>(environment.apiURL + "/user/complete-registration", request).pipe(
+      tap((response) => {
+        console.log("Complete Registration Response " + response)
+        if (response.body) {
+          this.userSubject.next(response.body)
+        }
+      })
+    )
+  }
+
   public forceLogout() {
-    this.jwtService.deleteAccessToken()
-    this.jwtService.deleteRefreshToken()
-    this.isLoggedInSubject.next(false)
-    this.userSubject.next(null)
+    this.jwtService.deleteAccessToken();
+    this.jwtService.deleteRefreshToken();
+    this.isLoggedInSubject.next(false);
+    this.userSubject.next(null);
+
+    this.router.navigate(['/login'])
+
   }
 
   private fetchCurrentUser() {

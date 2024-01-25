@@ -1,0 +1,93 @@
+<div class="fixed z-50 inset-0 bg-slate-950 w-screen h-svh bg-opacity-80">
+  <div
+    class="flex flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 py-8 px-12 bg-slate-50
+    max-w-[90%]  max-h-[80%] rounded overflow-auto w-full md:max-w-lg ">
+    <div class="flex flex-col gap-2">
+      <h2 class="text-2xl text-yellow-700 mx-auto border-b mb-2 pb-1 w-fit text-center">Complete seu cadastro</h2>
+      <p class="text-center md:text-left">Para usar o aplicativo, precisamos que você forneça mais algumas
+        informações:</p>
+    </div>
+    <form [formGroup]="checkoutForm" class="flex flex-col divide-y" (submit)="submitForm()">
+      <label for="username" class="input">
+        <span>Nome de usuário</span>
+        <input id="username" type="text" name="username" formControlName="username"
+               placeholder="Seu nome de usuário"
+               autocomplete="username"
+        />
+        <small>Esse será seu nome dentro da aplicação</small>
+        <small *ngIf="checkoutForm.get('username')?.touched && checkoutForm.get('username')?.getError('required')"
+               class="error">
+          Este campo é obrigatório.
+        </small>
+        <small *ngIf="checkoutForm.get('username')?.touched && checkoutForm.get('username')?.getError('minlength')"
+               class="error">
+          O nome de usuário deve ter pelo menos 5 caracteres.
+        </small>
+        <small *ngIf="checkoutForm.get('username')?.touched && checkoutForm.get('username')?.getError('pattern')"
+               class="error">
+          O nome de usuário não pode conter caracteres especias como #, &#64;, ! e acentos.
+        </small>
+      </label>
+      <label for="password" class="input">
+        <span>Senha</span>
+        <input id="password" type="password" name="password" formControlName="password"
+               placeholder="Senha"
+               autocomplete="password"
+        />
+        <small>Essa será sua senha para acessar a aplicação de agora em diante</small>
+        <small *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('required')"
+               class="error">
+          Este campo é obrigatório.
+        </small>
+        <small *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('minlength')"
+               class="error">
+          A senha deve ter pelo menos 8 caracteres.
+        </small>
+        <small
+          *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasUpperCase')"
+          class="error">
+          - Deve conter uma letra maiúscula
+        </small>
+        <small
+          *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasLowerCase')"
+          class="error">
+          - Deve conter uma letra minúscula
+        </small>
+        <small
+          *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasDigit')"
+          class="error">
+          - Deve conter um número
+        </small>
+        <small
+          *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasSpecialChar')"
+          class="error">
+          - Deve conter um caractere especial (!, &#64; #, $, %, ^, &, *)
+        </small>
+      </label>
+      <label for="confirmPassword" class="input">
+        <span>Confirme a senha</span>
+        <input id="confirmPassword" type="password" name="confirmPassword" formControlName="confirmPassword"
+               placeholder="Senha"
+               autocomplete="confirmPassword"
+        />
+        <small
+          *ngIf="checkoutForm.get('confirmPassword')?.touched && checkoutForm.get('confirmPassword')?.getError('required')"
+          class="error">
+          Este campo é obrigatório.
+        </small>
+        <small
+          *ngIf="checkoutForm.get('confirmPassword')?.touched && checkoutForm.get('confirmPassword')?.getError('mismatch')"
+          class="error">
+          As senhas não conferem.
+        </small>
+      </label>
+      <button type="submit"
+              class="mt-2 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:text-yellow-500 transition-colors">
+        Confirmar
+      </button>
+    </form>
+    <div class="mt-8">
+      <p class="text-sm"><b>Obs:</b> Caso você feche este popup, é só recarregar a página!</p>
+    </div>
+  </div>
+</div>

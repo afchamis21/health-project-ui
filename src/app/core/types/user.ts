@@ -9,3 +9,9 @@ export type User = {
 }
 
 export type GetUserResponse = BaseResponse<User>
+
+export type CompleteRegistrationRequest = {
+  username: string,
+  password: string,
+  confirmPassword: string
+}
