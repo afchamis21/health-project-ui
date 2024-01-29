@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthResponse, LoginRequest} from "../types/auth";
-import {CompleteRegistrationRequest, GetUserResponse, User} from "../types/user";
+import {GetUserResponse} from "../types/user";
 import {environment} from "../../../environments/environment";
 import {JwtService} from "./jwt.service";
 import {Router} from "@angular/router";
+import {UserService} from "./user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -14,25 +15,24 @@ export class AuthService {
   private static ref: AuthService | null
   private baseUrl = environment.apiURL + "/auth"
 
-  constructor(private httpClient: HttpClient, private jwtService: JwtService, private router: Router) {
+  constructor(private httpClient: HttpClient, private jwtService: JwtService, private userService: UserService, private router: Router) {
     if (!AuthService.ref) {
       AuthService.ref = this
     }
+
     if (jwtService.accessToken) {
       this.fetchCurrentUser().subscribe({
         next: response => {
-          this.userSubject.next(response.body)
+          this.userService.user$ = response.body
+        },
+        error: () => {
+          this.logout().subscribe()
         }
       })
     }
   }
 
-  private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)
   private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(!!this.jwtService.accessToken)
-
-  get user$() {
-    return this.userSubject.asObservable()
-  }
 
   get isLoggedIn() {
     return this.isLoggedInSubject.value
@@ -40,10 +40,6 @@ export class AuthService {
 
   get isLoggedIn$() {
     return this.isLoggedInSubject.asObservable()
-  }
-
-  updateUser(user: User | null) {
-    this.userSubject.next(user)
   }
 
   refreshTokens() {
@@ -63,7 +59,7 @@ export class AuthService {
         next: ({body: {accessToken, refreshToken, user}}) => {
           this.jwtService.accessToken = accessToken
           this.jwtService.refreshToken = refreshToken
-          this.userSubject.next(user)
+          this.userService.user$ = user
           this.isLoggedInSubject.next(true)
         }
       })
@@ -76,25 +72,14 @@ export class AuthService {
         this.jwtService.deleteAccessToken()
         this.jwtService.deleteRefreshToken()
         this.isLoggedInSubject.next(false)
-        this.userSubject.next(null)
+        this.userService.user$ = null
       }),
       catchError(err => {
         this.jwtService.deleteAccessToken()
         this.jwtService.deleteRefreshToken()
         this.isLoggedInSubject.next(false)
-        this.userSubject.next(null)
+        this.userService.user$ = null
         return throwError(() => err)
-      })
-    )
-  }
-
-  completeRegistration(request: CompleteRegistrationRequest) {
-    return this.httpClient.put<GetUserResponse>(environment.apiURL + "/user/complete-registration", request).pipe(
-      tap((response) => {
-        console.log("Complete Registration Response " + response)
-        if (response.body) {
-          this.userSubject.next(response.body)
-        }
       })
     )
   }
@@ -103,10 +88,9 @@ export class AuthService {
     this.jwtService.deleteAccessToken();
     this.jwtService.deleteRefreshToken();
     this.isLoggedInSubject.next(false);
-    this.userSubject.next(null);
+    this.userService.user$ = null
 
     this.router.navigate(['/login'])
-
   }
 
   private fetchCurrentUser() {

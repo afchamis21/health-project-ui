@@ -1,0 +1,113 @@
+<main class="flex-1 flex gap-6 md:gap-10 flex-wrap-reverse items-end container mx-auto p-8">
+    <section class="p-4 bg-slate-200 rounded-lg shadow-xl w-full md:flex-[2] md:min-w-[30rem] h-fit">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Edite suas informações</h2>
+            <button type="button"
+                    (click)="toggleEditingProfile()"
+                    class="hover:text-yellow-700 transition-colors leading-none flex items-center justify-center">
+                <mat-icon *ngIf="!isEditingProfile">edit_square</mat-icon>
+                <mat-icon *ngIf="isEditingProfile">close</mat-icon>
+            </button>
+        </div>
+        <form [formGroup]="editUserForm" class="flex flex-col divide-y divide-slate-300" (submit)="submitForm()">
+            <div class="input">
+                <span>Email</span>
+                <input [value]="user.email" disabled/>
+                <small>O email não pode ser alterado.</small>
+            </div>
+            <label for="username" class="input">
+                <span>Nome de usuário</span>
+                <input id="username" type="text" name="username" formControlName="username"
+                       placeholder="Seu nome de usuário"
+                       autocomplete="username"
+                />
+                <small>Esse será seu nome dentro da aplicação</small>
+                <small *ngIf="editUserForm.get('username')?.touched && editUserForm.get('username')?.getError('minlength')"
+                       class="error">
+                    O nome de usuário deve ter pelo menos 5 caracteres.
+                </small>
+                <small *ngIf="editUserForm.get('username')?.touched && editUserForm.get('username')?.getError('pattern')"
+                       class="error">
+                    O nome de usuário não pode conter caracteres especias como #, &#64;, ! e acentos.
+                </small>
+            </label>
+            <label for="password" class="input">
+                <span>Senha</span>
+                <input id="password" type="password" name="password" formControlName="password"
+                       placeholder="Senha"
+                       autocomplete="password"
+                />
+                <small>Essa será sua senha para acessar a aplicação de agora em diante</small>
+                <small *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('required')"
+                       class="error">
+                    Este campo é obrigatório.
+                </small>
+                <small *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('minlength')"
+                       class="error">
+                    - Deve ter pelo menos 8 caracteres.
+                </small>
+                <small
+                        *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('hasUpperCase')"
+                        class="error">
+                    - Deve conter uma letra maiúscula
+                </small>
+                <small
+                        *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('hasLowerCase')"
+                        class="error">
+                    - Deve conter uma letra minúscula
+                </small>
+                <small
+                        *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('hasDigit')"
+                        class="error">
+                    - Deve conter um número
+                </small>
+                <small
+                        *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('hasSpecialChar')"
+                        class="error">
+                    - Deve conter um caractere especial (!, &#64; #, $, %, ^, &, *)
+                </small>
+                <small
+                        *ngIf="editUserForm.get('password')?.touched && editUserForm.get('password')?.getError('hasSpace')"
+                        class="error">
+                    - Não pode conter espaços
+                </small>
+            </label>
+            <label for="confirmPassword" class="input">
+                <span>Confirme a senha</span>
+                <input id="confirmPassword" type="password" name="confirmPassword" formControlName="confirmPassword"
+                       placeholder="Senha"
+                       autocomplete="confirmPassword"
+                />
+                <small
+                        *ngIf="editUserForm.get('confirmPassword')?.touched && editUserForm.get('confirmPassword')?.getError('required')"
+                        class="error">
+                    Este campo é obrigatório.
+                </small>
+                <small
+                        *ngIf="editUserForm.get('confirmPassword')?.touched && editUserForm.get('confirmPassword')?.getError('mismatch')"
+                        class="error">
+                    As senhas não conferem.
+                </small>
+            </label>
+            <button type="submit"
+                    *ngIf="isEditingProfile"
+                    class="mt-2 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:text-yellow-500 transition-colors">
+                Confirmar
+            </button>
+        </form>
+    </section>
+    <section class="w-full md:flex-1 md:min-w-60">
+        <button (click)="goToBillingPortal()"
+                [disabled]="isGoingToBillingPortal"
+                class="bg-blue-950 p-4 text-slate-100 rounded-lg flex items-center justify-center w-full
+                hover:shadow-slate-400 hover:shadow-lg active:scale-95 transition-all
+                disabled:opacity-70 disabled:cursor-progress disabled:hover:shadow-none disabled:hover:scale-100">
+            <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
+              <mat-icon>settings</mat-icon> Gerencie sua assinatura
+            </span>
+            <span *ngIf="isGoingToBillingPortal" class="animate-spin leading-[0]">
+              <mat-icon>progress_activity</mat-icon>
+            </span>
+        </button>
+    </section>
+</main>

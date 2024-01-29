@@ -1,5 +1,9 @@
 .nav-link {
-  @apply text-slate-900 transition-colors hover:underline hover:text-yellow-700 py-2;
+  @apply text-slate-900 transition-colors flex gap-2 items-center hover:underline hover:text-yellow-700 py-2 w-full;
+}
+
+.nav-link > span {
+  @apply leading-none;
 }
 
 .transparent-header {

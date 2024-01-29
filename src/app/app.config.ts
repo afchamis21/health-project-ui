@@ -15,15 +15,14 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([apiKeyInterceptor, errorInterceptor]), withInterceptorsFromDi()),
     provideAnimations(),
     provideToastr({
-        progressBar: true,
-        newestOnTop: true,
-        maxOpened: 3,
-        autoDismiss: true
+      progressBar: true,
+      newestOnTop: true,
+      maxOpened: 3,
+      autoDismiss: true
     }), {
-        provide: HTTP_INTERCEPTORS,
-        useClass: AuthInterceptor,
-        multi: true
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     },
-    provideAnimations()
-]
+  ]
 };

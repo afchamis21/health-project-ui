@@ -41,7 +41,7 @@
         </small>
         <small *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('minlength')"
                class="error">
-          A senha deve ter pelo menos 8 caracteres.
+          - Deve ter pelo menos 8 caracteres.
         </small>
         <small
           *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasUpperCase')"
@@ -62,6 +62,11 @@
           *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasSpecialChar')"
           class="error">
           - Deve conter um caractere especial (!, &#64; #, $, %, ^, &, *)
+        </small>
+        <small
+          *ngIf="checkoutForm.get('password')?.touched && checkoutForm.get('password')?.getError('hasSpace')"
+          class="error">
+          - Não pode conter espaços
         </small>
       </label>
       <label for="confirmPassword" class="input">

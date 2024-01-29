@@ -15,3 +15,12 @@ export type CompleteRegistrationRequest = {
   password: string,
   confirmPassword: string
 }
+
+export type UpdateUserRequest = {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+} & (
+  | { password: string; confirmPassword: string }
+  | { password?: never; confirmPassword?: never }
+  );

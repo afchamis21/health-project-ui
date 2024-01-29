@@ -4,6 +4,7 @@ import {RouterLink, RouterOutlet} from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {HeaderComponent} from "./shared/components/header/header.component";
 import {FooterComponent} from "./shared/components/footer/footer.component";
+import {MatIconRegistry} from "@angular/material/icon";
 
 @Component({
   selector: 'app-root',
@@ -14,4 +15,8 @@ import {FooterComponent} from "./shared/components/footer/footer.component";
 })
 export class AppComponent {
   title = 'health-project-ui';
+
+  constructor(matIconRegistry: MatIconRegistry) {
+    matIconRegistry.setDefaultFontSetClass("material-symbols-outlined")
+  }
 }

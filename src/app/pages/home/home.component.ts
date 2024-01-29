@@ -8,6 +8,7 @@ import {NgIf} from "@angular/common";
 import {User} from "../../core/types/user";
 import {MatDialog} from "@angular/material/dialog";
 import {CheckoutDialogComponent, CheckoutDialogOutput} from "./components/checkout-dialog/checkout-dialog.component";
+import {UserService} from "../../core/services/user.service";
 
 @Component({
   selector: 'app-home',
@@ -24,13 +25,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   user: User | null = null
 
   constructor(
+    userService: UserService,
     private paymentService: PaymentService,
     protected authService: AuthService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private dialog: MatDialog
   ) {
-    const subscription = authService.user$.subscribe(user => this.user = user)
+    const subscription = userService.user$.subscribe(user => this.user = user)
     this.subscriptions.push(subscription)
   }
 

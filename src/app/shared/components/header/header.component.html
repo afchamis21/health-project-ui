@@ -18,9 +18,20 @@
       </button>
       <nav *ngIf="isMenuOpen"
            class="px-4 py-2 shadow absolute top-9 right-0 z-30 bg-slate-50 flex flex-col items-start text-slate-900 divide-y w-max">
-        <button (click)="handleLogout()" class="nav-link">Logout</button>
-        <a routerLink="/dashboard" class="nav-link">Dashboard</a>
-        <button (click)="paymentService.goToBillingPortal()" class="nav-link text-left">Gerenciar conta</button>
+        <button (click)="handleLogout()" class="nav-link" type="button">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+        <a routerLink="/dashboard" class="nav-link">
+          <mat-icon>patient_list</mat-icon>
+          <span>Pacientes</span>
+        </a>
+        <a routerLink="/profile" class="nav-link text-left">
+          <mat-icon>
+            person_edit
+          </mat-icon>
+          <span>Gerenciar conta</span>
+        </a>
       </nav>
     </div>
   </div>

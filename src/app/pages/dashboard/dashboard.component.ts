@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ToastrService} from "ngx-toastr";
 import {User} from "../../core/types/user";
 import {NgIf} from "@angular/common";
+import {UserService} from "../../core/services/user.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -23,11 +24,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
   user: User | null = null
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private toastr: ToastrService) {
+  constructor(private authService: AuthService, private userService: UserService, private dialog: MatDialog, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
-    const userSubscription = this.authService.user$.subscribe(user => {
+    const userSubscription = this.userService.user$.subscribe(user => {
       this.user = user
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return
       }
 
-      this.authService.completeRegistration({
+      this.userService.completeRegistration({
         ...value
       }).subscribe({
         next: () => {

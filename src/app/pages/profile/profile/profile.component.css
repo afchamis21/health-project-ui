@@ -1,0 +1,36 @@
+:host {
+    @apply flex flex-col pt-16
+}
+
+.input {
+    @apply flex flex-col gap-0.5 w-full py-4
+}
+
+.input > span {
+    @apply px-2 text-sm transition-colors;
+}
+
+.input:not(:has(input:disabled)):hover > span {
+    @apply text-yellow-700;
+}
+
+.input:not(:has(input:disabled)):has(input:focus) > span {
+    @apply text-yellow-700;
+}
+
+.input > input {
+    @apply border-2 border-gray-900 rounded px-2 py-2 transition-colors;
+}
+
+.input > input:disabled {
+    @apply hover:border-gray-900 bg-slate-200 pointer-events-none
+}
+
+.input:not(:has(input:disabled)):hover > input, .input > input:focus {
+    @apply border-yellow-700 outline-0
+}
+
+.input > .error {
+    @apply text-red-500
+}
+
