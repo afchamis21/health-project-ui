@@ -1,0 +1,19 @@
+.workspace-menu {
+  transition: width 1s;
+}
+
+.workspace-menu.closed li, .workspace-menu.closed input, .workspace-menu.closed span {
+  display: none;
+}
+
+.workspace-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.workspace-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workspace-list::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
+}

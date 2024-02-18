@@ -1,2 +1,17 @@
-<p>dashboard works!</p>
-<p *ngIf="user?.username">Olá {{user?.username}}</p>
+<div class="flex-1 w-screen mx-auto flex flex-col md:flex-row relative p-4 gap-4">
+  <app-desktop-dashboard-menu
+    class="hidden md:block"
+    [user]="user"
+    [workspaces]="filteredWorkspaces"
+    (onFilterWorkspace)="filterWorkspaces($event)"
+  ></app-desktop-dashboard-menu>
+  <app-mobile-dashboard-menu
+    class="block md:hidden"
+    [user]="user"
+    [workspaces]="filteredWorkspaces"
+    (onFilterWorkspace)="filterWorkspaces($event)"
+  ></app-mobile-dashboard-menu>
+  <main class="flex-1">
+    dashboard
+  </main>
+</div>

@@ -1,4 +1,4 @@
-import {BaseResponse} from "./response";
+import {BaseResponse} from "./http";
 import {User} from "./user";
 
 export type AuthResponse = BaseResponse<{

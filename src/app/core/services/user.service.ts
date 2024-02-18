@@ -3,6 +3,8 @@ import {CompleteRegistrationRequest, GetUserResponse, UpdateUserRequest, User} f
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, tap} from "rxjs";
+import {GetWorkspacesResponse} from "../types/workspace";
+import {PaginationData} from "../types/http";
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +36,13 @@ export class UserService {
         }
       })
     )
+  }
+
+  getWorkspaces(paginationData: PaginationData) {
+    return this.httpClient.get<GetWorkspacesResponse>(this.baseUrl + '/workspaces', {
+      params: {
+        ...paginationData
+      }
+    })
   }
 }

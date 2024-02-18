@@ -1,4 +1,4 @@
-import {BaseResponse} from "./response";
+import {BaseResponse} from "./http";
 
 export type User = {
   userId: number

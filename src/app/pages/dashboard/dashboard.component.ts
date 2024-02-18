@@ -8,14 +8,19 @@ import {
 import {MatDialog} from "@angular/material/dialog";
 import {ToastrService} from "ngx-toastr";
 import {User} from "../../core/types/user";
-import {NgIf} from "@angular/common";
 import {UserService} from "../../core/services/user.service";
+import {Workspace} from "../../core/types/workspace";
+import {WorkspaceCardComponent} from "./components/workspace-card/workspace-card.component";
+import {DesktopDashboardMenuComponent} from "./components/desktop-dashboard-menu/desktop-dashboard-menu.component";
+import {MobileDashboardMenuComponent} from "./components/mobile-dashboard-menu/mobile-dashboard-menu.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    NgIf
+    WorkspaceCardComponent,
+    DesktopDashboardMenuComponent,
+    MobileDashboardMenuComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
@@ -23,6 +28,98 @@ import {UserService} from "../../core/services/user.service";
 export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
   user: User | null = null
+  workspaces: Workspace[] = [
+    {
+      workspaceId: 1,
+      createDt: new Date(),
+      name: "Danilo Fernandes",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 2,
+      createDt: new Date(),
+      name: "Jane Alice Niess",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 3,
+      createDt: new Date(),
+      name: "Bruna Paola Bertagnon Fernandes",
+      isActive: false,
+      ownerId: 2
+    },
+    {
+      workspaceId: 1,
+      createDt: new Date(),
+      name: "Danilo Fernandes",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 2,
+      createDt: new Date(),
+      name: "Jane Alice Niess",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 3,
+      createDt: new Date(),
+      name: "Bruna Paola Bertagnon Fernandes",
+      isActive: false,
+      ownerId: 2
+    },
+    {
+      workspaceId: 1,
+      createDt: new Date(),
+      name: "Danilo Fernandes",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 2,
+      createDt: new Date(),
+      name: "Jane Alice Niess",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 3,
+      createDt: new Date(),
+      name: "Bruna Paola Bertagnon Fernandes",
+      isActive: false,
+      ownerId: 2
+    },
+    {
+      workspaceId: 1,
+      createDt: new Date(),
+      name: "Danilo Fernandes",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 2,
+      createDt: new Date(),
+      name: "Jane Alice Niess",
+      isActive: true,
+      ownerId: 2
+    },
+    {
+      workspaceId: 3,
+      createDt: new Date(),
+      name: "Bruna Paola Bertagnon Fernandes",
+      isActive: false,
+      ownerId: 2
+    },
+  ]
+
+  filteredWorkspaces = this.workspaces
+
+  activeWorkspace: Workspace | null = null
+
+  isWorkspaceMenuOpen = true;
 
   constructor(private authService: AuthService, private userService: UserService, private dialog: MatDialog, private toastr: ToastrService) {
   }
@@ -64,5 +161,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       })
     })
+  }
+
+  filterWorkspaces(value: string) {
+    this.filteredWorkspaces = this.workspaces.filter(
+      (workspace) => workspace.name.toLowerCase().startsWith(value.toLowerCase())
+    )
   }
 }
