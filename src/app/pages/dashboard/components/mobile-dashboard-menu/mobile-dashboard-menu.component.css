@@ -1,3 +1,15 @@
 .closed {
   transform: translateY(-100%);
 }
+
+.workspace-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.workspace-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workspace-list::-webkit-scrollbar-thumb {
+  @apply bg-slate-400;
+}

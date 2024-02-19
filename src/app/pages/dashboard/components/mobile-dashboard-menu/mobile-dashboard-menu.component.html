@@ -1,12 +1,12 @@
 <button (click)="toggleMenu()"
         class="bg-blue-950 text-slate-50 flex items-center justify-center absolute top-0 left-0 right-0 z-10">
-  <mat-icon *ngIf="!isMenuOpen">expand_more</mat-icon>
-  <mat-icon *ngIf="isMenuOpen">expand_less</mat-icon>
+  <mat-icon *ngIf="isMenuOpen">expand_more</mat-icon>
+  <mat-icon *ngIf="!isMenuOpen">expand_less</mat-icon>
 </button>
 <div
   class="z-[9] absolute bg-slate-100 inset-0 pt-12 px-6 pb-6 transition-transform flex flex-col gap-4"
   [ngClass]="{
-  'closed': isMenuOpen
+  'closed': !isMenuOpen
 }">
   <label for="search-workplace"
          class="group relative
@@ -25,12 +25,19 @@
     >
   </label>
 
-  <button *ngIf="user?.isPaymentActive" class="flex items-center gap-2 bg-slate-200 w-full rounded p-4 leading-none">
+  <button
+    *ngIf="user?.isPaymentActive"
+    (click)="createWorkspace()"
+    class="
+      flex items-center gap-2 bg-slate-200 w-full rounded p-4 leading-none transition-colors
+      hover:bg-blue-950 hover:text-slate-50
+    "
+  >
     <mat-icon>add</mat-icon>
     <span>Adicionar paciente</span>
   </button>
 
-  <ul class="flex flex-col gap-4 overflow-auto">
+  <ul class="flex flex-col gap-4 overflow-auto workspace-list">
     <li *ngFor="let workspace of workspaces">
       <app-workspace-card
         [workspace]="workspace"

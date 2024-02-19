@@ -2,13 +2,17 @@
   <app-desktop-dashboard-menu
     class="hidden md:block"
     [user]="user"
+    [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
+    (onToggleMenu)="toggleMenu()"
     (onFilterWorkspace)="filterWorkspaces($event)"
   ></app-desktop-dashboard-menu>
   <app-mobile-dashboard-menu
     class="block md:hidden"
     [user]="user"
+    [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
+    (onToggleMenu)="toggleMenu()"
     (onFilterWorkspace)="filterWorkspaces($event)"
   ></app-mobile-dashboard-menu>
   <main class="flex-1">

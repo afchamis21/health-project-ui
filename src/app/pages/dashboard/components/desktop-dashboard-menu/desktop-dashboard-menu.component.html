@@ -18,14 +18,21 @@
       class="flex-1 bg-transparent border-b-2 outline-0 border-slate-400 hover:border-blue-950 focus:border-blue-950 transition-colors"
       (input)="filterWorkspaces($event)"
     >
-    <button (click)="toggleWorkspaceMenu()"
+    <button (click)="toggleMenu()"
             class="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 z-10 bg-blue-950 leading-[0] p-2 rounded-full text-slate-50">
       <mat-icon *ngIf="isMenuOpen">chevron_left</mat-icon>
       <mat-icon *ngIf="!isMenuOpen">chevron_right</mat-icon>
     </button>
   </label>
 
-  <button *ngIf="user?.isPaymentActive" class="flex items-center bg-slate-200 w-full rounded p-4 leading-none">
+  <button
+    *ngIf="user?.isPaymentActive"
+    (click)="createWorkspace()"
+    class="
+      flex items-center gap-2 bg-slate-200 w-full rounded p-4 leading-none transition-colors
+      hover:bg-blue-950 hover:text-slate-50
+    "
+  >
     <mat-icon>add</mat-icon>
     <span>Adicionar paciente</span>
   </button>

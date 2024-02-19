@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   activeWorkspace: Workspace | null = null
 
-  isWorkspaceMenuOpen = true;
+  isMenuOpen = true;
 
   constructor(private authService: AuthService, private userService: UserService, private dialog: MatDialog, private toastr: ToastrService) {
   }
@@ -167,5 +167,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.filteredWorkspaces = this.workspaces.filter(
       (workspace) => workspace.name.toLowerCase().startsWith(value.toLowerCase())
     )
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen
   }
 }
