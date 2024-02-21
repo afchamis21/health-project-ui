@@ -5,6 +5,7 @@ import {WorkspaceCardComponent} from "../workspace-card/workspace-card.component
 import {User} from "../../../../core/types/user";
 import {Workspace} from "../../../../core/types/workspace";
 import {Menu} from "../menu";
+import {PageControllerComponent} from "../../../../shared/components/page-controller/page-controller.component";
 
 @Component({
   selector: 'app-desktop-dashboard-menu',
@@ -14,7 +15,8 @@ import {Menu} from "../menu";
     NgForOf,
     NgIf,
     WorkspaceCardComponent,
-    NgClass
+    NgClass,
+    PageControllerComponent
   ],
   templateUrl: './desktop-dashboard-menu.component.html',
   styleUrl: './desktop-dashboard-menu.component.css'
@@ -24,9 +26,17 @@ export class DesktopDashboardMenuComponent implements Menu {
   @Input() workspaces: Workspace[] = []
   @Input() isMenuOpen = false;
 
+  @Input() currentPage = 0
+  @Input() lastPage = 0
+  @Input() maxPages = 0
+
   @Output() onFilterWorkspace = new EventEmitter<string>()
   @Output() onCreateWorkspace = new EventEmitter<void>()
   @Output() onToggleMenu = new EventEmitter<void>()
+
+  @Output() onSpecificPage = new EventEmitter<number>()
+  @Output() onPreviousPage = new EventEmitter<void>()
+  @Output() onNextPage = new EventEmitter<void>()
 
   filterWorkspaces($event: Event) {
     this.onFilterWorkspace.emit(($event.target as HTMLInputElement).value)

@@ -1,8 +1,4 @@
-.workspace-menu {
-  transition: width 1s;
-}
-
-.workspace-menu.closed li, .workspace-menu.closed input, .workspace-menu.closed span {
+.workspace-menu.closed li, .workspace-menu.closed input, .workspace-menu.closed span, .workspace-menu.closed app-page-controller {
   display: none;
 }
 

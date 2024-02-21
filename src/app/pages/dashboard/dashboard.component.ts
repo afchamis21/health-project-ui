@@ -13,6 +13,14 @@ import {Workspace} from "../../core/types/workspace";
 import {WorkspaceCardComponent} from "./components/workspace-card/workspace-card.component";
 import {DesktopDashboardMenuComponent} from "./components/desktop-dashboard-menu/desktop-dashboard-menu.component";
 import {MobileDashboardMenuComponent} from "./components/mobile-dashboard-menu/mobile-dashboard-menu.component";
+import {WorkspaceService} from "../../core/services/workspace.service";
+import {ArrayUtils} from "../../shared/utils/array-utils";
+import {
+  CreateWorkspaceDialogComponent,
+  CreateWorkspaceDialogReturn
+} from "./components/create-workspace-dialog/create-workspace-dialog.component";
+import {PaginationData} from "../../core/types/http";
+import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
 
 @Component({
   selector: 'app-dashboard',
@@ -28,100 +36,25 @@ import {MobileDashboardMenuComponent} from "./components/mobile-dashboard-menu/m
 export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
   user: User | null = null
-  workspaces: Workspace[] = [
-    {
-      workspaceId: 1,
-      createDt: new Date(),
-      name: "Danilo Fernandes",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 2,
-      createDt: new Date(),
-      name: "Jane Alice Niess",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 3,
-      createDt: new Date(),
-      name: "Bruna Paola Bertagnon Fernandes",
-      isActive: false,
-      ownerId: 2
-    },
-    {
-      workspaceId: 1,
-      createDt: new Date(),
-      name: "Danilo Fernandes",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 2,
-      createDt: new Date(),
-      name: "Jane Alice Niess",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 3,
-      createDt: new Date(),
-      name: "Bruna Paola Bertagnon Fernandes",
-      isActive: false,
-      ownerId: 2
-    },
-    {
-      workspaceId: 1,
-      createDt: new Date(),
-      name: "Danilo Fernandes",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 2,
-      createDt: new Date(),
-      name: "Jane Alice Niess",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 3,
-      createDt: new Date(),
-      name: "Bruna Paola Bertagnon Fernandes",
-      isActive: false,
-      ownerId: 2
-    },
-    {
-      workspaceId: 1,
-      createDt: new Date(),
-      name: "Danilo Fernandes",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 2,
-      createDt: new Date(),
-      name: "Jane Alice Niess",
-      isActive: true,
-      ownerId: 2
-    },
-    {
-      workspaceId: 3,
-      createDt: new Date(),
-      name: "Bruna Paola Bertagnon Fernandes",
-      isActive: false,
-      ownerId: 2
-    },
-  ]
-
+  workspaces: Workspace[] = []
   filteredWorkspaces = this.workspaces
-
   activeWorkspace: Workspace | null = null
 
-  isMenuOpen = true;
+  isMenuOpen = true
+  menuPageSize = 5
+  menuCurrentPage = 1
+  menuLastPage = 0
+  menuMaxPages = 5
 
-  constructor(private authService: AuthService, private userService: UserService, private dialog: MatDialog, private toastr: ToastrService) {
+  sortMode: "ASC" | "DESC" = "DESC"
+
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private workspaceService: WorkspaceService,
+    private dialog: MatDialog,
+    private toastr: ToastrService
+  ) {
   }
 
   ngOnInit(): void {
@@ -129,17 +62,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.user = user
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
+      } else {
+        const workspacesSubscription = this.fetchWorkspaces()
+        this.subscriptions.push(workspacesSubscription)
       }
     })
-
 
     this.subscriptions.push(userSubscription)
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => {
-      subscription.unsubscribe()
-    })
+    SubscriptionUtils.unsubscribe(this.subscriptions)
+  }
+
+  fetchWorkspaces(paginationData: PaginationData = {
+                    page: this.menuCurrentPage,
+                    size: this.menuPageSize,
+                    sort: this.sortMode
+                  }
+  ) {
+    return this.userService.getWorkspaces({
+      ...paginationData,
+      page: paginationData.page - 1
+    }).subscribe({
+      next: (value) => {
+        ArrayUtils.clearArray(this.workspaces)
+        value.body.data?.forEach(workspace => {
+          this.workspaces.push(workspace)
+        })
+        this.menuLastPage = value.body.lastPage + 1
+      }
+    });
   }
 
   openCompleteRegistrationDialog() {
@@ -171,5 +124,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen
+  }
+
+  createWorkspace() {
+    const dialogRef = this.dialog.open(CreateWorkspaceDialogComponent)
+
+    dialogRef.afterClosed().subscribe((value: CreateWorkspaceDialogReturn) => {
+      if (value.complete) {
+        this.workspaceService.createWorkspace({name: value.value.name}).subscribe({
+          next: () => {
+            this.toastr.success(`Paciente ${value.value.name} cadastrado com sucesso!`)
+            this.fetchWorkspaces()
+          }
+        })
+      }
+    })
+  }
+
+  fetchNextPage() {
+    this.menuCurrentPage += 1
+    this.fetchWorkspaces()
+  }
+
+  fetchPreviousPage() {
+    this.menuCurrentPage -= 1
+    this.fetchWorkspaces()
+  }
+
+  fetchSpecificPage(page: number) {
+    this.menuCurrentPage = page
+    this.fetchWorkspaces()
   }
 }

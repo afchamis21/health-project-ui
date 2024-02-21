@@ -29,7 +29,7 @@
     *ngIf="user?.isPaymentActive"
     (click)="createWorkspace()"
     class="
-      flex items-center gap-2 bg-slate-200 w-full rounded p-4 leading-none transition-colors
+      flex items-center gap-2 justify-center bg-slate-200 w-full rounded p-4 leading-none transition-colors
       hover:bg-blue-950 hover:text-slate-50
     "
   >
@@ -37,11 +37,20 @@
     <span>Adicionar paciente</span>
   </button>
 
-  <ul class="flex flex-col gap-4 overflow-auto workspace-list">
+  <ul class="flex flex-col gap-4 overflow-auto flex-1 workspace-list">
     <li *ngFor="let workspace of workspaces">
       <app-workspace-card
         [workspace]="workspace"
       ></app-workspace-card>
     </li>
   </ul>
+
+  <app-page-controller
+    [currentPage]="currentPage"
+    [lastPage]="lastPage"
+    [maxPages]="maxPages"
+    (onNextPage)="onNextPage.emit()"
+    (onPreviousPage)="onPreviousPage.emit()"
+    (onSpecificPage)="onSpecificPage.emit($event)"
+  ></app-page-controller>
 </div>

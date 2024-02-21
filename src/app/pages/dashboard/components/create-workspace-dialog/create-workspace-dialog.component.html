@@ -1,1 +1,24 @@
-<p>create-workspace-dialog works!</p>
+<section class="py-8 px-12 bg-slate-50 flex flex-col gap-4 items-center relative">
+  <button (click)="close()"
+          class="outline-0 absolute top-2 right-2 leading-none text-sm hover:text-red-500 transition-colors">
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="text-2xl font-bold text-center">Adicionar paciente</h2>
+  <p>Preencha todos os campos para cadastrar um novo paciente</p>
+  <form class="flex flex-col gap-4" [formGroup]="createWorkspaceForm" (submit)="submitForm()">
+    <label for="name" class="flex gap-2">Nome do paciente:
+      <input
+        formControlName="name"
+        id="name"
+        name="name"
+        placeholder="Nome do paciente"
+        class="px-2 bg-transparent border-b-2 border-slate-400 focus:outline-0 focus:border-blue-950 hover:border-blue-950"
+      >
+      <small *ngIf="createWorkspaceForm.get('name')?.touched && createWorkspaceForm.get('name')?.getError('required')"
+             class="error">
+        Este campo é obrigatório.
+      </small>
+    </label>
+    <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800">Adicionar</button>
+  </form>
+</section>

@@ -1,0 +1,29 @@
+<div class="flex items-center justify-center w-full gap-2">
+  <button
+    class="flex items-center justify-center transition-colors hover:text-yellow-700 disabled:opacity-70 disabled:cursor-not-allowed"
+    [disabled]="currentPage === 1"
+    (click)="goToPreviousPage()"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <button
+    *ngFor="let page of pages"
+    class="
+      border-2 leading-none border-slate-400 rounded flex items-center justify-center w-8 h-8 transition-colors
+      hover:border-yellow-700
+    "
+    [ngClass]="{
+    'bg-yellow-700 border-yellow-700 text-slate-50': page == currentPage
+    }"
+    (click)="goToSpecificPage(page)"
+  >
+    {{ page }}
+  </button>
+  <button
+    class="flex items-center justify-center transition-colors hover:text-yellow-700 disabled:opacity-70 disabled:cursor-not-allowed"
+    [disabled]="currentPage === lastPage"
+    (click)="goToNextPage()"
+  >
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>

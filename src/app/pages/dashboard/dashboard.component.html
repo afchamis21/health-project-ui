@@ -4,16 +4,30 @@
     [user]="user"
     [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
+    [currentPage]="menuCurrentPage"
+    [lastPage]="menuLastPage"
+    [maxPages]="menuMaxPages"
     (onToggleMenu)="toggleMenu()"
+    (onCreateWorkspace)="createWorkspace()"
     (onFilterWorkspace)="filterWorkspaces($event)"
+    (onNextPage)="fetchNextPage()"
+    (onPreviousPage)="fetchPreviousPage()"
+    (onSpecificPage)="fetchSpecificPage($event)"
   ></app-desktop-dashboard-menu>
   <app-mobile-dashboard-menu
     class="block md:hidden"
     [user]="user"
     [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
+    [currentPage]="menuCurrentPage"
+    [lastPage]="menuLastPage"
+    [maxPages]="menuMaxPages"
     (onToggleMenu)="toggleMenu()"
+    (onCreateWorkspace)="createWorkspace()"
     (onFilterWorkspace)="filterWorkspaces($event)"
+    (onNextPage)="fetchNextPage()"
+    (onPreviousPage)="fetchPreviousPage()"
+    (onSpecificPage)="fetchSpecificPage($event)"
   ></app-mobile-dashboard-menu>
   <main class="flex-1">
     dashboard
