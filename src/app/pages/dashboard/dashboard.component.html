@@ -7,9 +7,9 @@
     [currentPage]="menuCurrentPage"
     [lastPage]="menuLastPage"
     [maxPages]="menuMaxPages"
+    [searchFormControl]="searchFormControl"
     (onToggleMenu)="toggleMenu()"
     (onCreateWorkspace)="createWorkspace()"
-    (onFilterWorkspace)="filterWorkspaces($event)"
     (onNextPage)="fetchNextPage()"
     (onPreviousPage)="fetchPreviousPage()"
     (onSpecificPage)="fetchSpecificPage($event)"
@@ -22,14 +22,17 @@
     [currentPage]="menuCurrentPage"
     [lastPage]="menuLastPage"
     [maxPages]="menuMaxPages"
+    [searchFormControl]="searchFormControl"
     (onToggleMenu)="toggleMenu()"
     (onCreateWorkspace)="createWorkspace()"
-    (onFilterWorkspace)="filterWorkspaces($event)"
     (onNextPage)="fetchNextPage()"
     (onPreviousPage)="fetchPreviousPage()"
     (onSpecificPage)="fetchSpecificPage($event)"
   ></app-mobile-dashboard-menu>
-  <main class="flex-1">
-    dashboard
+  <main class="flex-1 flex flex-col">
+    <app-workspace
+      [user]="user"
+      [workspace]="activeWorkspace"
+    ></app-workspace>
   </main>
 </div>

@@ -45,4 +45,13 @@ export class UserService {
       }
     })
   }
+
+  searchWorkspaces(name: string, paginationData: PaginationData) {
+    return this.httpClient.get<GetWorkspacesResponse>(this.baseUrl + '/workspaces/search', {
+      params: {
+        name,
+        ...paginationData
+      }
+    })
+  }
 }

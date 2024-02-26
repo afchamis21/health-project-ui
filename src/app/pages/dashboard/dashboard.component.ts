@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
+import {debounceTime, distinctUntilChanged, of, Subscription, switchMap} from "rxjs";
 import {AuthService} from "../../core/services/auth.service";
 import {
   CompleteRegistrationDialog,
@@ -21,6 +21,8 @@ import {
 } from "./components/create-workspace-dialog/create-workspace-dialog.component";
 import {PaginationData} from "../../core/types/http";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
+import {WorkspaceComponent} from "./components/workspace/workspace.component";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-dashboard',
@@ -28,16 +30,16 @@ import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
   imports: [
     WorkspaceCardComponent,
     DesktopDashboardMenuComponent,
-    MobileDashboardMenuComponent
-  ],
+    MobileDashboardMenuComponent,
+    WorkspaceComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
-  user: User | null = null
+  user!: User
   workspaces: Workspace[] = []
-  filteredWorkspaces = this.workspaces
+  filteredWorkspaces: Workspace[] = this.workspaces
   activeWorkspace: Workspace | null = null
 
   isMenuOpen = true
@@ -48,18 +50,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   sortMode: "ASC" | "DESC" = "DESC"
 
+  searchFormControl = new FormControl('')
+
   constructor(
     private authService: AuthService,
     private userService: UserService,
     private workspaceService: WorkspaceService,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {
   }
 
   ngOnInit(): void {
     const userSubscription = this.userService.user$.subscribe(user => {
-      this.user = user
+      this.user = user!
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
       } else {
@@ -68,20 +72,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.subscriptions.push(userSubscription)
+    const searchSubscription = this.searchFormControl.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((resultado, _) => {
+        return of(resultado);
+      })
+    ).subscribe(value => {
+      this.menuCurrentPage = 1
+      this.fetchWorkspaces(value)
+    })
+
+    this.subscriptions.push(userSubscription, searchSubscription)
   }
 
   ngOnDestroy(): void {
     SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
-  fetchWorkspaces(paginationData: PaginationData = {
+  fetchWorkspaces(name: string | null = null, paginationData: PaginationData = {
                     page: this.menuCurrentPage,
                     size: this.menuPageSize,
                     sort: this.sortMode
                   }
   ) {
-    return this.userService.getWorkspaces({
+    if (name == null) {
+      name = this.searchFormControl.value || ''
+    }
+
+    return this.userService.searchWorkspaces(name, {
       ...paginationData,
       page: paginationData.page - 1
     }).subscribe({
@@ -114,12 +133,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       })
     })
-  }
-
-  filterWorkspaces(value: string) {
-    this.filteredWorkspaces = this.workspaces.filter(
-      (workspace) => workspace.name.toLowerCase().startsWith(value.toLowerCase())
-    )
   }
 
   toggleMenu() {

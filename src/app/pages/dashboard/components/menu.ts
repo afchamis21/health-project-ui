@@ -6,11 +6,8 @@ export interface Menu {
   user: User | null;
   workspaces: Workspace[];
   isMenuOpen: boolean;
-  onFilterWorkspace: EventEmitter<string>;
   onCreateWorkspace: EventEmitter<void>;
   onToggleMenu: EventEmitter<void>;
-
-  filterWorkspaces($event: Event): void;
 
   createWorkspace(): void;
 

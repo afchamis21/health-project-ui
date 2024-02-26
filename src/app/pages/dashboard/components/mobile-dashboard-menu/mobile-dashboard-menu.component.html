@@ -21,7 +21,7 @@
       type="text"
       placeholder="Procure um paciente..."
       class="flex-1 bg-transparent border-b-2 outline-0 border-slate-400 hover:border-blue-950 focus:border-blue-950 transition-colors"
-      (input)="filterWorkspaces($event)"
+      [formControl]="searchFormControl"
     >
   </label>
 

@@ -6,6 +6,7 @@ import {User} from "../../../../core/types/user";
 import {Workspace} from "../../../../core/types/workspace";
 import {Menu} from "../menu";
 import {PageControllerComponent} from "../../../../shared/components/page-controller/page-controller.component";
+import {FormControl, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-mobile-dashboard-menu',
@@ -17,30 +18,28 @@ import {PageControllerComponent} from "../../../../shared/components/page-contro
     NgForOf,
     WorkspaceCardComponent,
     PageControllerComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './mobile-dashboard-menu.component.html',
   styleUrl: './mobile-dashboard-menu.component.css'
 })
 export class MobileDashboardMenuComponent implements Menu {
-  @Input() user: User | null = null
+  @Input() user!: User
   @Input() workspaces: Workspace[] = []
-  @Input() isMenuOpen = false;
+  @Input() isMenuOpen = false
 
   @Input() currentPage = 0
   @Input() lastPage = 0
   @Input() maxPages = 0
 
-  @Output() onFilterWorkspace = new EventEmitter<string>()
+  @Input() searchFormControl!: FormControl<string | null>
+
   @Output() onCreateWorkspace = new EventEmitter<void>()
   @Output() onToggleMenu = new EventEmitter<void>()
 
   @Output() onSpecificPage = new EventEmitter<number>()
   @Output() onPreviousPage = new EventEmitter<void>()
   @Output() onNextPage = new EventEmitter<void>()
-
-  filterWorkspaces($event: Event) {
-    this.onFilterWorkspace.emit(($event.target as HTMLInputElement).value)
-  }
 
   createWorkspace() {
     this.onCreateWorkspace.emit()
