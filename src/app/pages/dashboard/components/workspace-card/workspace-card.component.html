@@ -1,7 +1,12 @@
 <button type="button"
-        class="bg-slate-200 w-full rounded p-4 transition-colors
+        class="w-full rounded p-4 transition-colors
           hover:bg-blue-950 hover:text-slate-50
         "
+        [ngClass]="{
+        'bg-blue-950 text-slate-50': isSelected,
+        'bg-slate-200': !isSelected
+        }"
+        (click)="selectWorkspace()"
 >
   {{workspace.name}}
 </button>

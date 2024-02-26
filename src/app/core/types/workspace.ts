@@ -20,4 +20,6 @@ export type UpdateWorkspaceRequest = {
   name: string
 }
 
+export type GetWorkspaceResponse = BaseResponse<Workspace>
+
 export type GetWorkspacesResponse = PaginatedResponse<Workspace>
