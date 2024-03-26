@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {Workspace} from "../types/workspace";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {WorkspaceService} from "./workspace.service";
 
 @Injectable({
@@ -17,12 +17,15 @@ export class WorkspaceStateService {
     return this.workspaceSubject.asObservable();
   }
 
-  constructor(private route: ActivatedRoute, private workspaceService: WorkspaceService) {
+  constructor(private route: ActivatedRoute, private router: Router, private workspaceService: WorkspaceService) {
     this.route.queryParams.subscribe(params => {
       let workspaceId = params[this.workspaceIdRouteParam]
       if (!workspaceId) {
         workspaceId = localStorage.getItem(this.localStorageKey)
-        console.log(workspaceId)
+        if (workspaceId) {
+          this.selectWorkspace(workspaceId)
+          return
+        }
       }
 
       if (workspaceId) {
@@ -32,17 +35,41 @@ export class WorkspaceStateService {
               this.workspaceSubject.next(response.body)
               localStorage.setItem(this.localStorageKey, workspaceId)
             }
-          })
+          }),
+          error: () => {
+            this.clearState()
+          }
         })
       }
     })
   }
 
-  selectWorkspace(workspace: Workspace) {
-    this.workspaceSubject.next(workspace)
+  selectWorkspace(workspaceId: number) {
+    const routeParams = {
+      ...this.route.snapshot.queryParams,
+      [this.workspaceIdRouteParam]: workspaceId
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: routeParams
+    });
   }
 
   deselectWorkspace() {
-    this.workspaceSubject.next(null)
+    const routeParams = {
+      ...this.route.snapshot.queryParams,
+      [this.workspaceIdRouteParam]: null
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: routeParams
+    });
+  }
+
+  clearState() {
+    localStorage.removeItem(this.localStorageKey)
+    this.deselectWorkspace()
   }
 }

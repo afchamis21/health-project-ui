@@ -16,7 +16,8 @@
       px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-blue-950 transition-colors hover:brightness-110
       disabled:opacity-70 disabled:cursor-progress disabled:hover:brightness-100
       ">
-      Cadastre-se
+      <span *ngIf="!isGoingToCheckout">Cadastre-se</span>
+      <loader-spinner size="S" *ngIf="isGoingToCheckout"></loader-spinner>
     </button>
     <button
       *ngIf="authService.isLoggedIn && !user?.isPaymentActive"
@@ -26,7 +27,8 @@
       px-4 py-2 flex items-center justify-center text-sm rounded-md text-slate-100 bg-blue-950 transition-colors hover:text-yellow-600
       disabled:opacity-70 disabled:cursor-progress disabled:hover:brightness-100
       ">
-      Faça um upgrade!
+      <span *ngIf="!isGoingToCheckout">Faça um upgrade!</span>
+      <loader-spinner size="S" *ngIf="isGoingToCheckout"></loader-spinner>
     </button>
     <div
       *ngIf="authService.isLoggedIn && user?.isPaymentActive"

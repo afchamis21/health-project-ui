@@ -15,6 +15,7 @@ import {
   GetWorkspaceMembersResponse
 } from "../types/workspace-member";
 import {PaginationData} from "../types/http";
+import {ClockInRequest, GetAttendanceResponse} from "../types/attendance";
 
 @Injectable({
   providedIn: 'root'
@@ -67,5 +68,13 @@ export class WorkspaceService {
 
   fetchWorkspace(workspaceId: number) {
     return this.http.get<GetWorkspaceResponse>(`${this.baseUrl}/${workspaceId}`)
+  }
+
+  clockIn(clockInRequest: ClockInRequest) {
+    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-in`, clockInRequest)
+  }
+
+  clockOut() {
+    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-out`, {})
   }
 }

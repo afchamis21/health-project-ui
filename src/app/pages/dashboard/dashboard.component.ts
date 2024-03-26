@@ -40,7 +40,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   user!: User
   workspaces: Workspace[] = []
   filteredWorkspaces: Workspace[] = this.workspaces
-  activeWorkspace: Workspace | null = null
 
   isMenuOpen = true
   menuPageSize = 5
@@ -51,6 +50,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   sortMode: "ASC" | "DESC" = "DESC"
 
   searchFormControl = new FormControl('')
+
+  localStorageIsMenuOpenKey = "is-dashboard-menu-open"
 
   constructor(
     private authService: AuthService,
@@ -83,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.fetchWorkspaces(value)
     })
 
+    this.isMenuOpen = localStorage.getItem(this.localStorageIsMenuOpenKey) === 'true'
     this.subscriptions.push(userSubscription, searchSubscription)
   }
 
@@ -137,6 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen
+    localStorage.setItem(this.localStorageIsMenuOpenKey, String(this.isMenuOpen))
   }
 
   createWorkspace() {

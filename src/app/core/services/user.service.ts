@@ -54,4 +54,26 @@ export class UserService {
       }
     })
   }
+
+  clockIn(workspaceId: number) {
+    this.userSubject.next(this.userSubject.value
+      ?
+      {
+        ...this.userSubject.value,
+        clockedInAt: workspaceId,
+        isClockedIn: true
+      }
+      : null)
+  }
+
+  clockOut() {
+    this.userSubject.next(this.userSubject.value
+      ?
+      {
+        ...this.userSubject.value,
+        clockedInAt: undefined,
+        isClockedIn: false
+      }
+      : null)
+  }
 }

@@ -9,12 +9,14 @@ import {User} from "../../core/types/user";
 import {MatDialog} from "@angular/material/dialog";
 import {CheckoutDialogComponent, CheckoutDialogOutput} from "./components/checkout-dialog/checkout-dialog.component";
 import {UserService} from "../../core/services/user.service";
+import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    NgIf
+    NgIf,
+    SpinnerComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Tab, tabs} from "../../../../../core/types/tab";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-tabs',
   standalone: true,
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css'
@@ -32,8 +33,21 @@ export class TabsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['activeTab'] && !changes['lastPage'].firstChange) {
+    if (changes['activeTab'] && !changes['activeTab']?.firstChange) {
       this.activeTab = changes['activeTab'].currentValue
     }
+
+    if (changes['isOwner'] && !changes['isOwner']?.firstChange) {
+      this.isOwner = changes['isOwner'].currentValue
+      this.filterTabs()
+    }
+  }
+
+  selectTab(tab: Tab) {
+    this.onTabSelected.emit(tab)
+  }
+
+  formatDisplayText(displayText: string): string {
+    return (displayText.at(0)?.toUpperCase() || '') + (displayText.slice(1)?.toLowerCase() || '')
   }
 }

@@ -8,5 +8,14 @@
         }"
         (click)="selectWorkspace()"
 >
-  {{workspace.name}}
+  <span class="flex gap-2 items-center whitespace-nowrap flex-nowrap text-nowrap overflow-ellipsis overflow-hidden"
+        [ngClass]="{
+  'justify-start': isOpen,
+  'justify-center': !isOpen
+  }">
+    <mat-icon>person</mat-icon>
+    <span>
+      {{isOpen ? workspace.name : abbreviatedName}}
+    </span>
+  </span>
 </button>

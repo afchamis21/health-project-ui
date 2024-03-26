@@ -5,11 +5,12 @@ import {LoginComponent} from "./pages/login/login.component";
 import {HeaderComponent} from "./shared/components/header/header.component";
 import {FooterComponent} from "./shared/components/footer/footer.component";
 import {MatIconRegistry} from "@angular/material/icon";
+import {SpinnerComponent} from "./shared/components/loader/spinner/spinner.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, LoginComponent, RouterLink, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, LoginComponent, RouterLink, HeaderComponent, FooterComponent, SpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

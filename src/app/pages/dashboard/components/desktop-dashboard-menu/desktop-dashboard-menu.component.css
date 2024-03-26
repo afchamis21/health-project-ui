@@ -1,7 +1,3 @@
-.workspace-menu.closed li, .workspace-menu.closed input, .workspace-menu.closed span, .workspace-menu.closed app-page-controller {
-  display: none;
-}
-
 .workspace-list::-webkit-scrollbar {
   width: 4px;
 }

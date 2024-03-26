@@ -1,0 +1,12 @@
+<span class="flex items-center justify-center" [ngClass]="{
+  'text-[1rem]': size === 'S',
+  'text-3xl': size === 'M',
+  'text-5xl': size === 'G',
+  'text-slate-50': color === 'neutral',
+  'text-blue-950': color === 'primary',
+  'text-yellow-800': color === 'secondary',
+}"
+>
+  <mat-icon [inline]="true" class="animate-spin">progress_activity
+</mat-icon>
+</span>

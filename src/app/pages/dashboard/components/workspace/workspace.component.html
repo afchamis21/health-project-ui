@@ -3,3 +3,24 @@
     Selecione um paciente para visualizar suas informações.
   </div>
 </div>
+<div *ngIf="workspace" class="h-full flex-1 flex flex-col">
+  <div *ngIf="!clockedIn" class="flex-1 flex items-center justify-center">
+    <div class="p-4 rounded-md border-2 border-yellow-700 flex flex-col gap-8">
+      Para começar a trabalhar bata o ponto.
+      <button
+        class="bg-yellow-700 p-2 text-slate-50 hover:bg-yellow-800 transition-colors"
+        (click)="clockIn(workspace.workspaceId)"
+      >
+        Bater ponto
+      </button>
+    </div>
+  </div>
+  <div *ngIf="clockedIn">
+    <app-tabs
+      [activeTab]="selectedTab"
+      [isOwner]="user?.userId === workspace.ownerId"
+      (onTabSelected)="selectTab($event)"
+    ></app-tabs>
+    <p>{{workspace.name}}</p>
+  </div>
+</div>

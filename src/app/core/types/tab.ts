@@ -1,11 +1,14 @@
-export type TabName = "members" | "manage";
+export type TabName = "members" | "manage" | "schedule" | "supplies";
 
 export type Tab = {
   name: TabName;
+  displayText: string;
   ownerOnly: boolean;
 };
 
 export const tabs: Record<TabName, Tab> = {
-  members: {name: "members", ownerOnly: false},
-  manage: {name: "manage", ownerOnly: true}
+  schedule: {name: 'schedule', displayText: 'horários', ownerOnly: false},
+  members: {name: 'members', displayText: 'membros', ownerOnly: false},
+  manage: {name: 'manage', displayText: 'gerenciar', ownerOnly: true},
+  supplies: {name: 'supplies', displayText: 'suprimentos', ownerOnly: false}
 };

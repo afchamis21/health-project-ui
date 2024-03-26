@@ -6,6 +6,8 @@ export type User = {
   email: string
   isPaymentActive: boolean
   isRegistrationComplete: boolean
+  isClockedIn: boolean
+  clockedInAt?: number
 }
 
 export type GetUserResponse = BaseResponse<User>

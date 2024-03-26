@@ -48,4 +48,10 @@ export class DesktopDashboardMenuComponent implements Menu {
   toggleMenu() {
     this.onToggleMenu.emit()
   }
+
+  handleOpenMenu() {
+    if (!this.isMenuOpen) {
+      this.onToggleMenu.emit()
+    }
+  }
 }

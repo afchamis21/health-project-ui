@@ -1,7 +1,7 @@
 <button (click)="toggleMenu()"
         class="bg-blue-950 text-slate-50 flex items-center justify-center absolute top-0 left-0 right-0 z-10">
-  <mat-icon *ngIf="isMenuOpen">expand_more</mat-icon>
-  <mat-icon *ngIf="!isMenuOpen">expand_less</mat-icon>
+  <mat-icon *ngIf="!isMenuOpen">expand_more</mat-icon>
+  <mat-icon *ngIf="isMenuOpen">expand_less</mat-icon>
 </button>
 <div
   class="z-[9] absolute bg-slate-100 inset-0 pt-12 px-6 pb-6 transition-transform flex flex-col gap-4"
@@ -41,6 +41,7 @@
     <li *ngFor="let workspace of workspaces">
       <app-workspace-card
         [workspace]="workspace"
+        [isOpen]="isMenuOpen"
       ></app-workspace-card>
     </li>
   </ul>
