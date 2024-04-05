@@ -9,19 +9,22 @@ import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
 import {UserService} from "../../core/services/user.service";
+import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    SpinnerComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
+  isLoggingIn = false
 
   constructor(
     private authService: AuthService,
@@ -58,10 +61,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this.loginForm.get('password')?.value!,
     }
 
+    this.isLoggingIn = true
+
     const subscription = this.authService.login(formData).subscribe({
       next: () => {
+        this.isLoggingIn = false
         this.toastr.success("Logado com sucesso!")
         this.router.navigate(['/dashboard'])
+      },
+      error: () => {
+        this.isLoggingIn = false
+        this.loginForm.controls.password.setValue('')
       }
     })
 

@@ -23,7 +23,8 @@
       </label>
       <button
         class="mt-4 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:shadow-md hover:shadow-slate-400 transition-all">
-        Entrar
+        <span *ngIf="!isLoggingIn">Entrar</span>
+        <loader-spinner *ngIf="isLoggingIn"></loader-spinner>
       </button>
     </form>
   </div>
