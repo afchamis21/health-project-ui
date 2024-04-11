@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Workspace} from "../../../../core/types/workspace";
-import {WorkspaceStateService} from "../../../../core/services/workspace-state.service";
+import {WorkspaceStateService} from "../../../../core/services/workspace/workspace-state.service";
 import {NgClass, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../shared/utils/subscription-utils";

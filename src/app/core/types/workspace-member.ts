@@ -8,12 +8,15 @@ export type WorkspaceMember = {
   user: User
 }
 
+export type WorkspaceMemberName = Pick<User, "userId" | "username">
+
+
 export type GetWorkspaceMembersResponse = PaginatedResponse<WorkspaceMember>
+
+export type GetWorkspaceMembersNamesResponse = BaseResponse<WorkspaceMemberName[]>
 
 export type CreateWorkspaceMemberRequest = {
   email: string
 }
 
 export type CreateWorkspaceMemberResponse = BaseResponse<WorkspaceMember>
-
-export type DeleteWorkspaceMemberResponse = BaseResponse<null>
