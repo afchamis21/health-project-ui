@@ -7,6 +7,7 @@ import {Workspace} from "../../../../core/types/workspace";
 import {Menu} from "../menu";
 import {PageControllerComponent} from "../../../../shared/components/page-controller/page-controller.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {PaginationData} from "../../../../core/types/http";
 
 @Component({
   selector: 'app-mobile-dashboard-menu',
@@ -28,9 +29,7 @@ export class MobileDashboardMenuComponent implements Menu {
   @Input() workspaces: Workspace[] = []
   @Input() isMenuOpen = false
 
-  @Input() currentPage = 0
-  @Input() lastPage = 0
-  @Input() maxPages = 0
+  @Input() paginationData!: PaginationData
 
   @Input() searchFormControl!: FormControl<string | null>
 

@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {AuthResponse, LoginRequest} from "../types/auth";
-import {GetUserResponse} from "../types/user";
-import {environment} from "../../../environments/environment";
+import {AuthResponse, LoginRequest} from "../../types/auth";
+import {GetUserResponse} from "../../types/user";
+import {environment} from "../../../../environments/environment";
 import {JwtService} from "./jwt.service";
 import {Router} from "@angular/router";
-import {UserService} from "./user.service";
+import {UserService} from "../user/user.service";
 
 @Injectable({
   providedIn: 'root'

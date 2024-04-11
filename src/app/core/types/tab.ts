@@ -1,4 +1,4 @@
-export type TabName = "members" | "manage" | "schedule" | "supplies";
+export type TabName = "members" | "manage" | "schedule" | "supplies" | "attendance";
 
 export type Tab = {
   name: TabName;
@@ -8,7 +8,8 @@ export type Tab = {
 
 export const tabs: Record<TabName, Tab> = {
   schedule: {name: 'schedule', displayText: 'horários', ownerOnly: false},
-  members: {name: 'members', displayText: 'membros', ownerOnly: false},
+  members: {name: 'members', displayText: 'colaboradores', ownerOnly: false},
   manage: {name: 'manage', displayText: 'gerenciar', ownerOnly: true},
-  supplies: {name: 'supplies', displayText: 'suprimentos', ownerOnly: false}
+  supplies: {name: 'supplies', displayText: 'suprimentos', ownerOnly: false},
+  attendance: {name: 'attendance', displayText: 'histórico de presença', ownerOnly: true},
 };

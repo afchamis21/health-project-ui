@@ -2,12 +2,12 @@ import {Component} from '@angular/core';
 import {MatIconModule} from "@angular/material/icon";
 import {NgIf} from "@angular/common";
 import {UpdateUserRequest, User} from "../../../core/types/user";
-import {AuthService} from "../../../core/services/auth.service";
+import {AuthService} from "../../../core/services/auth/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {confirmPasswordValidator, passwordValidator} from "../../../core/validators/form-validators";
 import {ToastrService} from "ngx-toastr";
-import {UserService} from "../../../core/services/user.service";
-import {PaymentService} from "../../../core/services/payment.service";
+import {UserService} from "../../../core/services/user/user.service";
+import {PaymentService} from "../../../core/services/payment/payment.service";
 
 @Component({
   selector: 'app-profile',

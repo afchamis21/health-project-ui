@@ -1,0 +1,15 @@
+:host {
+  @apply flex-1 flex flex-col
+}
+
+.action-button {
+  @apply flex items-center gap-2;
+
+  mat-icon {
+    @apply text-lg
+  }
+}
+
+.tag {
+  @apply text-sm py-1 px-2 rounded w-fit
+}

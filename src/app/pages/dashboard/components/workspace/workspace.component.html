@@ -15,12 +15,27 @@
       </button>
     </div>
   </div>
-  <div *ngIf="clockedIn">
+  <div *ngIf="clockedIn" class="flex-1 flex flex-col">
     <app-tabs
       [activeTab]="selectedTab"
       [isOwner]="user?.userId === workspace.ownerId"
       (onTabSelected)="selectTab($event)"
     ></app-tabs>
-    <p>{{workspace.name}}</p>
+    <div [ngSwitch]="selectedTab?.name" class="flex-1 w-full p-4  flex flex-col items-center justify-center">
+      <div *ngSwitchCase="'members'" class="tab">
+        <app-members-tab
+          [workspace]="workspace"
+        ></app-members-tab>
+      </div>
+      <div *ngSwitchCase="'manage'">Tab manage</div>
+      <div *ngSwitchCase="'schedule'">Tab schedule</div>
+      <div *ngSwitchCase="'supplies'">Tab supplies</div>
+      <div *ngSwitchCase="'attendance'" class="tab">
+        <app-attendance-tab></app-attendance-tab>
+      </div>
+      <p *ngSwitchDefault class="p-4 rounded-md border-2 border-yellow-700 pointer-events-none select-none">
+        Selecione uma aba para começar!
+      </p>
+    </div>
   </div>
 </div>

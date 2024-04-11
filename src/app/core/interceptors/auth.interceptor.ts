@@ -1,8 +1,8 @@
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {catchError, Observable, switchMap, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
-import {JwtService} from "../services/jwt.service";
-import {AuthService} from "../services/auth.service";
+import {JwtService} from "../services/auth/jwt.service";
+import {AuthService} from "../services/auth/auth.service";
 import {Router} from "@angular/router";
 
 @Injectable()

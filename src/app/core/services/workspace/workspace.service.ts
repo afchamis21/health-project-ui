@@ -1,21 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import {environment} from "../../../../environments/environment";
 import {
   CreateWorkspaceRequest,
   CreateWorkspaceResponse,
   DeleteWorkspaceResponse,
   GetWorkspaceResponse,
   UpdateWorkspaceRequest
-} from "../types/workspace";
-import {
-  CreateWorkspaceMemberRequest,
-  CreateWorkspaceMemberResponse,
-  DeleteWorkspaceMemberResponse,
-  GetWorkspaceMembersResponse
-} from "../types/workspace-member";
-import {PaginationData} from "../types/http";
-import {ClockInRequest, GetAttendanceResponse} from "../types/attendance";
+} from "../../types/workspace";
 
 @Injectable({
   providedIn: 'root'
@@ -46,35 +38,7 @@ export class WorkspaceService {
     return this.http.put<DeleteWorkspaceResponse>(`${this.baseUrl}/${workspaceId}/update`, data)
   } // Na tab gerenciar
 
-  getMembers(workspaceId: number, paginationData: PaginationData) {
-    return this.http.get<GetWorkspaceMembersResponse>(`${this.baseUrl}/${workspaceId}/members`, {
-      params: {
-        ...paginationData
-      }
-    }) // Na tab membros
-  }
-
-  addMember(workspaceId: number, data: CreateWorkspaceMemberRequest) {
-    return this.http.post<CreateWorkspaceMemberResponse>(`${this.baseUrl}/${workspaceId}/members`, data)
-  } // Na tab membros
-
-  removeMember(workspaceId: number, userId: number) {
-    return this.http.delete<DeleteWorkspaceMemberResponse>(`${this.baseUrl}/${workspaceId}/members`, {
-      params: {
-        userId
-      }
-    })
-  } // Na tab membros
-
   fetchWorkspace(workspaceId: number) {
     return this.http.get<GetWorkspaceResponse>(`${this.baseUrl}/${workspaceId}`)
-  }
-
-  clockIn(clockInRequest: ClockInRequest) {
-    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-in`, clockInRequest)
-  }
-
-  clockOut() {
-    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-out`, {})
   }
 }

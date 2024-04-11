@@ -1,10 +1,10 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterLink} from "@angular/router";
-import {AuthService} from "../../../core/services/auth.service";
+import {AuthService} from "../../../core/services/auth/auth.service";
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../utils/subscription-utils";
-import {PaymentService} from "../../../core/services/payment.service";
+import {PaymentService} from "../../../core/services/payment/payment.service";
 import {MatIconModule} from "@angular/material/icon";
 
 @Component({

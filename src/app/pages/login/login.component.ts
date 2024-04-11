@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthService} from "../../core/services/auth.service";
+import {AuthService} from "../../core/services/auth/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {LoginRequest} from "../../core/types/auth";
@@ -8,7 +8,7 @@ import {User} from "../../core/types/user";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
-import {UserService} from "../../core/services/user.service";
+import {UserService} from "../../core/services/user/user.service";
 import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 
 @Component({

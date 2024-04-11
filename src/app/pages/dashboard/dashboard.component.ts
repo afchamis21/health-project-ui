@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {debounceTime, distinctUntilChanged, of, Subscription, switchMap} from "rxjs";
-import {AuthService} from "../../core/services/auth.service";
+import {AuthService} from "../../core/services/auth/auth.service";
 import {
   CompleteRegistrationDialog,
   CompleteRegistrationDialogComponent
@@ -8,12 +8,12 @@ import {
 import {MatDialog} from "@angular/material/dialog";
 import {ToastrService} from "ngx-toastr";
 import {User} from "../../core/types/user";
-import {UserService} from "../../core/services/user.service";
+import {UserService} from "../../core/services/user/user.service";
 import {Workspace} from "../../core/types/workspace";
 import {WorkspaceCardComponent} from "./components/workspace-card/workspace-card.component";
 import {DesktopDashboardMenuComponent} from "./components/desktop-dashboard-menu/desktop-dashboard-menu.component";
 import {MobileDashboardMenuComponent} from "./components/mobile-dashboard-menu/mobile-dashboard-menu.component";
-import {WorkspaceService} from "../../core/services/workspace.service";
+import {WorkspaceService} from "../../core/services/workspace/workspace.service";
 import {ArrayUtils} from "../../shared/utils/array-utils";
 import {
   CreateWorkspaceDialogComponent,
@@ -42,12 +42,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   filteredWorkspaces: Workspace[] = this.workspaces
 
   isMenuOpen = true
-  menuPageSize = 5
-  menuCurrentPage = 1
-  menuLastPage = 0
-  menuMaxPages = 5
 
-  sortMode: "ASC" | "DESC" = "DESC"
+  menuPaginationData: PaginationData = {
+    page: 0,
+    size: 5,
+    lastPage: 0,
+    maxPages: 5,
+    sort: "DESC"
+  }
 
   searchFormControl = new FormControl('')
 
@@ -67,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.user = user!
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
-      } else {
+      } else if (user) {
         const workspacesSubscription = this.fetchWorkspaces()
         this.subscriptions.push(workspacesSubscription)
       }
@@ -80,7 +82,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return of(resultado);
       })
     ).subscribe(value => {
-      this.menuCurrentPage = 1
+      this.menuPaginationData.page = 0
       this.fetchWorkspaces(value)
     })
 
@@ -92,26 +94,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
-  fetchWorkspaces(name: string | null = null, paginationData: PaginationData = {
-                    page: this.menuCurrentPage,
-                    size: this.menuPageSize,
-                    sort: this.sortMode
-                  }
-  ) {
+  fetchWorkspaces(name: string | null = null) {
     if (name == null) {
       name = this.searchFormControl.value || ''
     }
 
-    return this.userService.searchWorkspaces(name, {
-      ...paginationData,
-      page: paginationData.page - 1
-    }).subscribe({
+    return this.userService.searchWorkspaces(name, this.menuPaginationData).subscribe({
       next: (value) => {
         ArrayUtils.clearArray(this.workspaces)
         value.body.data?.forEach(workspace => {
           this.workspaces.push(workspace)
         })
-        this.menuLastPage = value.body.lastPage + 1
+        this.menuPaginationData.lastPage = value.body.lastPage
       }
     });
   }
@@ -158,17 +152,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchNextPage() {
-    this.menuCurrentPage += 1
+    this.menuPaginationData.page += 1
     this.fetchWorkspaces()
   }
 
   fetchPreviousPage() {
-    this.menuCurrentPage -= 1
+    this.menuPaginationData.page -= 1
     this.fetchWorkspaces()
   }
 
   fetchSpecificPage(page: number) {
-    this.menuCurrentPage = page
+    this.menuPaginationData.page = page
     this.fetchWorkspaces()
   }
 }

@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PaymentService} from "../../core/services/payment.service";
+import {PaymentService} from "../../core/services/payment/payment.service";
 import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
-import {AuthService} from "../../core/services/auth.service";
+import {AuthService} from "../../core/services/auth/auth.service";
 import {NgIf} from "@angular/common";
 import {User} from "../../core/types/user";
 import {MatDialog} from "@angular/material/dialog";
 import {CheckoutDialogComponent, CheckoutDialogOutput} from "./components/checkout-dialog/checkout-dialog.component";
-import {UserService} from "../../core/services/user.service";
+import {UserService} from "../../core/services/user/user.service";
 import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 
 @Component({

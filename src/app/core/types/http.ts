@@ -11,5 +11,7 @@ export type PaginatedResponse<T> = BaseResponse<{
 export type PaginationData = {
   page: number,
   size: number,
+  lastPage: number,
+  maxPages: 5,
   sort: 'ASC' | 'DESC'
 }

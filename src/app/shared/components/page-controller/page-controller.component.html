@@ -1,7 +1,7 @@
 <div class="flex items-center justify-center w-full gap-2">
   <button
     class="flex items-center justify-center transition-colors hover:text-yellow-700 disabled:opacity-70 disabled:cursor-not-allowed"
-    [disabled]="currentPage === 1"
+    [disabled]="paginationData.page === 0"
     (click)="goToPreviousPage()"
   >
     <mat-icon>chevron_left</mat-icon>
@@ -13,15 +13,15 @@
       hover:border-yellow-700
     "
     [ngClass]="{
-    'bg-yellow-700 border-yellow-700 text-slate-50': page == currentPage
+    'bg-yellow-700 border-yellow-700 text-slate-50': page == paginationData.page
     }"
     (click)="goToSpecificPage(page)"
   >
-    {{ page }}
+    {{ page + 1 }}
   </button>
   <button
     class="flex items-center justify-center transition-colors hover:text-yellow-700 disabled:opacity-70 disabled:cursor-not-allowed"
-    [disabled]="currentPage === lastPage"
+    [disabled]="paginationData.page === paginationData.lastPage"
     (click)="goToNextPage()"
   >
     <mat-icon>chevron_right</mat-icon>

@@ -1,12 +1,10 @@
-<div class="flex-1 w-screen mx-auto flex flex-col md:flex-row relative p-4 gap-4">
+<div class="flex-1 w-screen mx-auto flex flex-col md:flex-row relative p-4">
   <app-desktop-dashboard-menu
     class="hidden md:block"
     [user]="user"
     [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
-    [currentPage]="menuCurrentPage"
-    [lastPage]="menuLastPage"
-    [maxPages]="menuMaxPages"
+    [paginationData]="menuPaginationData"
     [searchFormControl]="searchFormControl"
     (onToggleMenu)="toggleMenu()"
     (onCreateWorkspace)="createWorkspace()"
@@ -19,9 +17,7 @@
     [user]="user"
     [isMenuOpen]="isMenuOpen"
     [workspaces]="filteredWorkspaces"
-    [currentPage]="menuCurrentPage"
-    [lastPage]="menuLastPage"
-    [maxPages]="menuMaxPages"
+    [paginationData]="menuPaginationData"
     [searchFormControl]="searchFormControl"
     (onToggleMenu)="toggleMenu()"
     (onCreateWorkspace)="createWorkspace()"

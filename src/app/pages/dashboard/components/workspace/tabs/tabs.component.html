@@ -1,13 +1,13 @@
-<header class="flex flex-wrap border-b-2 gap-1 border-slate-300 pb-2 justify-center md:justify-normal">
+<header class="flex flex-wrap border-b-2 gap-1 border-slate-300 p-2 pt-4 md:pt-0 justify-normal">
   <button type="button"
           *ngFor="let tab of filteredTabs"
           (click)="selectTab(tab)"
           class="px-3 py-1 rounded-lg transition-colors"
           [ngClass]="{
-          'bg-blue-950 text-slate-50': activeTab?.name === tab.name,
-          'hover:bg-opacity-80 hover:bg-blue-950 hover:text-slate-50': activeTab?.name !== tab.name
+          'bg-blue-800 text-slate-50': activeTab?.name === tab.name,
+          'hover:bg-opacity-80 hover:bg-blue-800 hover:text-slate-50': activeTab?.name !== tab.name
           }"
   >
-    {{formatDisplayText(tab.displayText)}}
+    {{ formatDisplayText(tab.displayText) }}
   </button>
 </header>

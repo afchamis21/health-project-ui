@@ -1,0 +1,62 @@
+<header class="flex gap-4 flex-wrap justify-between">
+  <h2 class="text-2xl">Lista de colaboradores</h2>
+  <div class="">
+    <button *ngIf="isOwner"
+            class="bg-blue-800 text-slate-50 p-2 rounded flex items-center gap-2 hover:brightness-110 transition-all
+            disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:brightness-100"
+            (click)="addMemberToWorkspace()"
+    >
+      <mat-icon [inline]="true">add</mat-icon>
+      <span>Adicionar colaborador</span>
+    </button>
+  </div>
+</header>
+
+<ul class="divide-y divide-slate-300 mt-8 flex-1" *ngIf="!isLoadingMembers">
+  <li *ngFor="let member of members" class="py-2 flex justify-between items-baseline gap-6 flex-wrap">
+    <span>{{ member.user.username }}</span>
+    <div class="flex flex-col-reverse items-end md:flex-row md:gap-6">
+      <div *ngIf="isOwner && member.user.userId !== workspace.ownerId">
+        <button
+          class="action-button hover:text-green-700 transition-colors"
+          *ngIf="!member.isMemberActive"
+          (click)="activateMember(member.user.userId)"
+        >
+          <mat-icon [inline]="true">check</mat-icon>
+          Ativar
+        </button>
+        <button
+          class="action-button hover:text-red-700 transition-colors"
+          *ngIf="member.isMemberActive"
+          (click)="deactivateMember(member.user.userId)"
+        >
+          <mat-icon [inline]="true">block</mat-icon>
+          Desativar
+        </button>
+      </div>
+      <span
+        *ngIf="member.user.userId === workspace.ownerId"
+        class="tag bg-slate-800 text-slate-100">Dono</span>
+      <span
+        *ngIf="member.user.userId !== workspace.ownerId && member.isMemberActive"
+        class="tag bg-green-700 text-slate-50">Ativo
+      </span>
+      <span
+        *ngIf="member.user.userId !== workspace.ownerId && !member.isMemberActive"
+        class="tag bg-red-700 text-slate-50">Inativo
+      </span>
+    </div>
+  </li>
+</ul>
+
+<app-page-controller
+  *ngIf="!isLoadingMembers"
+  [paginationData]="paginationData"
+  (onNextPage)="handleNextPage()"
+  (onPreviousPage)="handlePreviousPage()"
+  (onSpecificPage)="handleSpecificPage($event)"
+></app-page-controller>
+
+<div class="flex-1 flex items-center justify-center" *ngIf="isLoadingMembers">
+  <loader-spinner *ngIf="isLoadingMembers" color="primary" size="M"></loader-spinner>
+</div>

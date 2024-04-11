@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
-import {Workspace} from "../types/workspace";
+import {Workspace} from "../../types/workspace";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WorkspaceService} from "./workspace.service";
 

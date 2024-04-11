@@ -47,9 +47,7 @@
   </ul>
 
   <app-page-controller
-    [currentPage]="currentPage"
-    [lastPage]="lastPage"
-    [maxPages]="maxPages"
+    [paginationData]="paginationData"
     (onNextPage)="onNextPage.emit()"
     (onPreviousPage)="onPreviousPage.emit()"
     (onSpecificPage)="onSpecificPage.emit($event)"
