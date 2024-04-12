@@ -58,7 +58,9 @@
 
   <app-page-controller
     *ngIf="isMenuOpen"
-    [paginationData]="paginationData"
+    [currentPage]="paginationData.page"
+    [lastPage]="paginationData.lastPage"
+    [controllerSize]="paginationData.maxPages"
     (onNextPage)="onNextPage.emit()"
     (onPreviousPage)="onPreviousPage.emit()"
     (onSpecificPage)="onSpecificPage.emit($event)"

@@ -1,1 +1,51 @@
-<p>attendance-tab works!</p>
+<header class="flex gap-4 flex-wrap justify-between">
+  <h2 class="text-2xl">Histórico de presença</h2>
+  <form class="flex gap-2" (submit)="handleFilterAttendances()">
+    <select [(ngModel)]="selectedMemberId" name="names" id="names"
+            class="px-2 py-1 border-2 bg-slate-50 border-gray-300 rounded hover:border-blue-800 transition-colors cursor-pointer">
+      <option disabled selected>Escolha um membro</option>
+      <option [value]="null">Todos</option>
+      <option *ngFor="let member of members" [value]="member.userId">{{ member.username }}</option>
+    </select>
+    <button type="submit"
+            class="
+            px-2 py-1 bg-slate-300 rounded hover:bg-blue-800 hover:text-slate-50 transition-colors
+            disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-slate-300 disabled:hover:text-slate-900
+            "
+    >Filtrar
+    </button>
+  </form>
+</header>
+
+<div class="table-wrapper relative">
+  <table>
+    <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Entrada</th>
+      <th>Saída</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="!isLoadingAttendances">
+    <tr *ngFor="let attendance of attendances">
+      <td>{{ attendance.username }}</td>
+      <td>{{ formatDate(attendance.clockInTime) }}</td>
+      <td>{{ attendance.clockOutTime ? formatDate(attendance.clockOutTime) : "-" }}</td>
+    </tr>
+    <tr *ngIf="attendances.length === 0">
+      <td>Não há nada para mostrar no histórico</td>
+    </tr>
+    </tbody>
+  </table>
+  <div *ngIf="isLoadingAttendances" class="absolute w-fit top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+    <loader-spinner size="G" color="primary"></loader-spinner>
+  </div>
+</div>
+
+<app-page-controller
+  [currentPage]="paginationData.page"
+  [lastPage]="paginationData.lastPage"
+  [controllerSize]="paginationData.maxPages" (onNextPage)="handleNextPage()"
+  (onPreviousPage)="handlePreviousPage()"
+  (onSpecificPage)="handleSpecificPage($event)"
+></app-page-controller>

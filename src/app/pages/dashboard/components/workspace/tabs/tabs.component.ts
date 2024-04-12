@@ -1,6 +1,12 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Tab, tabs} from "../../../../../core/types/tab";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {User} from "../../../../../core/types/user";
+import {Workspace} from "../../../../../core/types/workspace";
+import {UserStateService} from "../../../../../core/services/user/user-state.service";
+import {WorkspaceStateService} from "../../../../../core/services/workspace/workspace-state.service";
+import {Subscription} from "rxjs";
+import {SubscriptionUtils} from "../../../../../shared/utils/subscription-utils";
 
 @Component({
   selector: 'app-tabs',
@@ -13,34 +19,54 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css'
 })
-export class TabsComponent implements OnInit, OnChanges {
+export class TabsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() activeTab: Tab | null = null
-  @Input() isOwner: boolean = false
 
-  @Output() onTabSelected = new EventEmitter<Tab>()
+  @Output() onTabSelected = new EventEmitter<Tab | null>()
 
+  workspace: Workspace | null = null
   tabs = tabs
   filteredTabs: Tab[] = []
+  user: User | null = null
+
+  subscriptions: Subscription[] = []
+
+  constructor(protected userStateService: UserStateService, workspaceStateService: WorkspaceStateService) {
+    const userSub = userStateService.user$.subscribe({
+      next: user => {
+        this.user = user
+      }
+    })
+
+    const workspaceSub = workspaceStateService.workspace$.subscribe({
+      next: workspace => {
+        this.workspace = workspace
+        this.filterTabs()
+      }
+    })
+
+    this.subscriptions.push(userSub, workspaceSub)
+  }
 
   ngOnInit(): void {
     this.filterTabs()
   }
 
-  filterTabs() {
-    this.filteredTabs = Object.values(this.tabs).filter(tab => {
-      return !tab.ownerOnly || (tab.ownerOnly && this.isOwner)
-    })
+
+  ngOnDestroy(): void {
+    SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['activeTab'] && !changes['activeTab']?.firstChange) {
       this.activeTab = changes['activeTab'].currentValue
     }
+  }
 
-    if (changes['isOwner'] && !changes['isOwner']?.firstChange) {
-      this.isOwner = changes['isOwner'].currentValue
-      this.filterTabs()
-    }
+  filterTabs() {
+    this.filteredTabs = Object.values(this.tabs).filter(tab => {
+      return !tab.ownerOnly || (tab.ownerOnly && this.user?.userId === this.workspace?.ownerId)
+    })
   }
 
   selectTab(tab: Tab) {

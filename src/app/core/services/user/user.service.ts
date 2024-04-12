@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {CompleteRegistrationRequest, GetUserResponse, UpdateUserRequest, User} from "../../types/user";
+import {CompleteRegistrationRequest, GetUserResponse, UpdateUserRequest} from "../../types/user";
 import {environment} from "../../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Observable, tap} from "rxjs";
 import {GetWorkspacesResponse} from "../../types/workspace";
 import {PaginationData} from "../../types/http";
 
@@ -11,17 +10,12 @@ import {PaginationData} from "../../types/http";
 })
 export class UserService {
   private baseUrl = environment.apiURL + "/user"
-  private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)
-
-  get user$(): Observable<User | null> {
-    return this.userSubject.asObservable();
-  }
-
-  set user$(user: User | null) {
-    this.userSubject.next(user);
-  }
 
   constructor(private httpClient: HttpClient) {
+  }
+
+  fetchCurrentUser() {
+    return this.httpClient.get<GetUserResponse>(this.baseUrl)
   }
 
   updateUser(data: UpdateUserRequest) {
@@ -29,13 +23,7 @@ export class UserService {
   }
 
   completeRegistration(request: CompleteRegistrationRequest) {
-    return this.httpClient.put<GetUserResponse>(this.baseUrl + "/complete-registration", request).pipe(
-      tap((response) => {
-        if (response.body) {
-          this.user$ = response.body
-        }
-      })
-    )
+    return this.httpClient.put<GetUserResponse>(this.baseUrl + "/complete-registration", request)
   }
 
   searchWorkspaces(name: string, paginationData: PaginationData) {
@@ -45,27 +33,5 @@ export class UserService {
         ...paginationData
       }
     })
-  }
-
-  clockIn(workspaceId: number) {
-    this.userSubject.next(this.userSubject.value
-      ?
-      {
-        ...this.userSubject.value,
-        clockedInAt: workspaceId,
-        isClockedIn: true
-      }
-      : null)
-  }
-
-  clockOut() {
-    this.userSubject.next(this.userSubject.value
-      ?
-      {
-        ...this.userSubject.value,
-        clockedInAt: undefined,
-        isClockedIn: false
-      }
-      : null)
   }
 }

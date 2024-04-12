@@ -2,12 +2,10 @@ import {Component} from '@angular/core';
 import {MatIconModule} from "@angular/material/icon";
 import {NgIf} from "@angular/common";
 import {UpdateUserRequest, User} from "../../../core/types/user";
-import {AuthService} from "../../../core/services/auth/auth.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {confirmPasswordValidator, passwordValidator} from "../../../core/validators/form-validators";
-import {ToastrService} from "ngx-toastr";
-import {UserService} from "../../../core/services/user/user.service";
 import {PaymentService} from "../../../core/services/payment/payment.service";
+import {UserStateService} from "../../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-profile',
@@ -25,8 +23,11 @@ export class ProfileComponent {
   isGoingToBillingPortal = false
   user: User = {} as User
 
-  constructor(private userService: UserService, private authService: AuthService, private paymentService: PaymentService, private toastr: ToastrService) {
-    userService.user$.subscribe(value => {
+  constructor(
+    private paymentService: PaymentService,
+    private userStateService: UserStateService
+  ) {
+    userStateService.user$.subscribe(value => {
       if (!value) {
         return
       }
@@ -87,12 +88,7 @@ export class ProfileComponent {
       payload = {...payload, password, confirmPassword}
     }
 
-    this.userService.updateUser(payload).subscribe({
-      next: () => {
-        this.toastr.success("Usuário atualizado com sucesso!")
-        this.authService.forceLogout()
-      }
-    })
+    this.userStateService.handleUpdateUser(payload)
   }
 
   goToBillingPortal() {

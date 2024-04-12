@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
 import {UserService} from "../../core/services/user/user.service";
 import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
+import {UserStateService} from "../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoggingIn = false
 
   constructor(
+    private userStateService: UserStateService,
     private authService: AuthService,
     private userService: UserService,
     private toastr: ToastrService,
@@ -39,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const subscription = this.userService.user$.subscribe(value => this.user = value)
+    const subscription = this.userStateService.user$.subscribe(value => this.user = value)
     this.subscriptions.push(subscription)
   }
 

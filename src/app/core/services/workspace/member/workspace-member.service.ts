@@ -47,7 +47,7 @@ export class WorkspaceMemberService {
   }
 
   getMembersNames(workspaceId: number) {
-    return this.http.get<GetWorkspaceMembersNamesResponse>(`${this.baseUrl}/${workspaceId}/members/deactivate`)
+    return this.http.get<GetWorkspaceMembersNamesResponse>(`${this.baseUrl}/${workspaceId}/members/names`)
 
   }
 }

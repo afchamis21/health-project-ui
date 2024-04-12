@@ -45,7 +45,6 @@ export class CheckoutDialogComponent {
   }
 
   submitForm() {
-    console.log("Attempting to submit form", this.checkoutForm)
     if (!this.checkoutForm.valid && !this.data.email) {
       this.checkoutForm.markAllAsTouched()
       return

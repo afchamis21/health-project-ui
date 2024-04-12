@@ -1,0 +1,39 @@
+:host {
+  @apply flex-1 flex flex-col;
+}
+
+.table-wrapper {
+  @apply overflow-y-auto h-[50vh] mt-8 rounded;
+
+  table {
+    @apply text-left border-collapse table-auto w-full;
+
+    thead th {
+      @apply sticky top-0 bg-slate-300
+    }
+
+    td, th {
+      @apply p-2
+    }
+
+    tr:nth-child(even) {
+      @apply bg-slate-200
+    }
+
+    tbody tr {
+      @apply border-y border-gray-300;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-slate-400;
+  }
+}

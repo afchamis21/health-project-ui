@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
-import {PaginationData} from "../../../core/types/http";
 
 @Component({
   selector: 'app-page-controller',
@@ -19,7 +18,9 @@ export class PageControllerComponent implements OnInit, OnChanges {
   @Output() onPreviousPage = new EventEmitter<void>()
   @Output() onNextPage = new EventEmitter<void>()
 
-  @Input() paginationData!: PaginationData
+  @Input() currentPage!: number
+  @Input() lastPage!: number
+  @Input() controllerSize!: number
 
   pages: number[] = []
 
@@ -28,46 +29,53 @@ export class PageControllerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['paginationData'] && !changes['paginationData'].firstChange) {
-      console.log("Changes to pagination data happened", changes['paginationData'].currentValue)
-      this.paginationData = changes['paginationData'].currentValue
+    if (changes['page'] && !changes['page'].firstChange) {
+      this.currentPage = changes['page'].currentValue
+    }
+
+    if (changes['lastPage'] && !changes['lastPage'].firstChange) {
+      this.lastPage = changes['lastPage'].currentValue
+    }
+
+    if (changes['controllerSize'] && !changes['controllerSize'].firstChange) {
+      this.controllerSize = changes['controllerSize'].currentValue
     }
 
     this.pages = this.calculateDisplayedPages()
   }
 
-  calculateDisplayedPages({page: currentPage, lastPage, maxPages}: PaginationData = this.paginationData): number[] {
+  calculateDisplayedPages(): number[] {
     const displayedPages: number[] = [];
 
-    for (let i = 0; i <= lastPage; i++) {
+    for (let i = 0; i <= this.lastPage; i++) {
       displayedPages.push(i)
     }
 
-    if (maxPages >= displayedPages.length) {
+    if (this.controllerSize >= displayedPages.length) {
       return displayedPages;
     }
 
-    if (currentPage + maxPages > displayedPages.length) {
-      return displayedPages.slice(displayedPages.length - maxPages)
+    if (this.currentPage + this.controllerSize > displayedPages.length) {
+      return displayedPages.slice(displayedPages.length - this.controllerSize)
     }
 
-    return displayedPages.slice(currentPage, currentPage + maxPages);
+    return displayedPages.slice(this.currentPage, this.currentPage + this.controllerSize);
   }
 
   goToNextPage() {
-    if (this.paginationData.page !== this.paginationData.lastPage) {
+    if (this.currentPage !== this.lastPage) {
       this.onNextPage.emit()
     }
   }
 
   goToPreviousPage() {
-    if (this.paginationData.page !== 0) {
+    if (this.currentPage !== 0) {
       this.onPreviousPage.emit()
     }
   }
 
   goToSpecificPage(page: number) {
-    if (page !== this.paginationData.page) {
+    if (page !== this.currentPage) {
       this.onSpecificPage.emit(page)
     }
   }

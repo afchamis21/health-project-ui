@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {debounceTime, distinctUntilChanged, of, Subscription, switchMap} from "rxjs";
-import {AuthService} from "../../core/services/auth/auth.service";
 import {
   CompleteRegistrationDialog,
   CompleteRegistrationDialogComponent
@@ -23,6 +22,7 @@ import {PaginationData} from "../../core/types/http";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
 import {WorkspaceComponent} from "./components/workspace/workspace.component";
 import {FormControl} from "@angular/forms";
+import {UserStateService} from "../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -56,16 +56,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   localStorageIsMenuOpenKey = "is-dashboard-menu-open"
 
   constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private workspaceService: WorkspaceService,
     private dialog: MatDialog,
     private toastr: ToastrService,
+    private userService: UserService,
+    private userStateService: UserStateService,
+    private workspaceService: WorkspaceService,
   ) {
   }
 
   ngOnInit(): void {
-    const userSubscription = this.userService.user$.subscribe(user => {
+    const userSubscription = this.userStateService.user$.subscribe(user => {
       this.user = user!
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
@@ -114,20 +114,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(CompleteRegistrationDialogComponent)
 
     dialogRef.afterClosed().subscribe((value: CompleteRegistrationDialog) => {
-      console.log("Form Submitted:")
-      console.table(value)
       if (!value.complete) {
         return
       }
 
-      this.userService.completeRegistration({
-        ...value
-      }).subscribe({
-        next: () => {
-          this.toastr.success("Usuário atualizado com sucesso!")
-          this.authService.forceLogout()
-        }
-      })
+      this.userStateService.handleCompleteRegistration(value)
     })
   }
 

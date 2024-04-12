@@ -2,8 +2,8 @@
   <h2 class="text-2xl">Lista de colaboradores</h2>
   <div class="">
     <button *ngIf="isOwner"
-            class="bg-blue-800 text-slate-50 p-2 rounded flex items-center gap-2 hover:brightness-110 transition-all
-            disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:brightness-100"
+            class="bg-slate-300 p-2 rounded flex items-center gap-2 hover:bg-blue-800 hover:text-slate-50 transition-colors
+            disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-slate-300 disabled:hover:text-slate-950"
             (click)="addMemberToWorkspace()"
     >
       <mat-icon [inline]="true">add</mat-icon>
@@ -51,8 +51,9 @@
 
 <app-page-controller
   *ngIf="!isLoadingMembers"
-  [paginationData]="paginationData"
-  (onNextPage)="handleNextPage()"
+  [currentPage]="paginationData.page"
+  [lastPage]="paginationData.lastPage"
+  [controllerSize]="paginationData.maxPages" (onNextPage)="handleNextPage()"
   (onPreviousPage)="handlePreviousPage()"
   (onSpecificPage)="handleSpecificPage($event)"
 ></app-page-controller>

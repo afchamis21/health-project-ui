@@ -17,6 +17,7 @@ import {
   WorkspaceMemberStateService
 } from "../../../../../../core/services/workspace/member/workspace-member-state.service";
 import {WorkspaceMemberService} from "../../../../../../core/services/workspace/member/workspace-member.service";
+import {UserStateService} from "../../../../../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-members-tab',
@@ -47,8 +48,13 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
   isLoadingMembers = false;
 
-  constructor(private workspaceMemberService: WorkspaceMemberService, private userService: UserService, private dialog: MatDialog,
-              private toastr: ToastrService, private workspaceMemberStateService: WorkspaceMemberStateService
+  constructor(
+    private workspaceMemberService: WorkspaceMemberService,
+    private userService: UserService,
+    private dialog: MatDialog,
+    private toastr: ToastrService,
+    private workspaceMemberStateService: WorkspaceMemberStateService,
+    private userStateService: UserStateService
   ) {
     this.paginationData = this.workspaceMemberStateService.getPaginationData()
   }
@@ -57,10 +63,6 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     const memberSubscription = this.workspaceMemberStateService.members$.subscribe({
       next: data => {
         this.members = data
-
-        if (data.length === 0) {
-          this.workspaceMemberStateService.fetchMembers()
-        }
       }
     })
 
@@ -70,7 +72,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
       }
     })
 
-    const userSubscription = this.userService.user$.subscribe(value => {
+    const userSubscription = this.userStateService.user$.subscribe(value => {
       this.user = value
       this.isOwner = value?.userId === this.workspace.ownerId
     })
@@ -140,28 +142,15 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   handleNextPage() {
-    this.paginationData = {
-      ...this.paginationData,
-      page: this.paginationData.page + 1,
-    }
-
-    this.workspaceMemberStateService.fetchMembers()
+    this.handleSpecificPage(this.paginationData.page + 1)
   }
 
   handlePreviousPage() {
-    this.paginationData = {
-      ...this.paginationData,
-      page: this.paginationData.page - 1,
-    }
-
-    this.workspaceMemberStateService.fetchMembers()
+    this.handleSpecificPage(this.paginationData.page - 1)
   }
 
   handleSpecificPage(page: number) {
-    this.paginationData = {
-      ...this.paginationData,
-      page: page,
-    }
+    this.paginationData.page = page
 
     this.workspaceMemberStateService.fetchMembers()
   }

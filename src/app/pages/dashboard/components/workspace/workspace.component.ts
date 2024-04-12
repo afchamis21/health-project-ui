@@ -1,17 +1,15 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Tab, tabs} from "../../../../core/types/tab";
 import {User} from "../../../../core/types/user";
 import {Workspace} from "../../../../core/types/workspace";
 import {NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from "@angular/common";
-import {WorkspaceService} from "../../../../core/services/workspace/workspace.service";
 import {WorkspaceStateService} from "../../../../core/services/workspace/workspace-state.service";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../shared/utils/subscription-utils";
 import {TabsComponent} from "./tabs/tabs.component";
-import {UserService} from "../../../../core/services/user/user.service";
 import {MembersTabComponent} from "./tabs/members-tab/members-tab.component";
 import {AttendanceTabComponent} from "./tabs/attendance-tab/attendance-tab.component";
-import {WorkspaceAttendanceService} from "../../../../core/services/workspace/attendance/workspace-attendance.service";
+import {UserStateService} from "../../../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-workspace',
@@ -30,62 +28,54 @@ import {WorkspaceAttendanceService} from "../../../../core/services/workspace/at
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
-  @Input() user?: User;
+  user: User | null = null;
   workspace: Workspace | null = null;
 
   initialTab: Tab = tabs.members;
 
   selectedTab: Tab | null = this.initialTab;
-  clockedIn = false
 
   subscriptions: Subscription[] = []
+  isClockedIn: boolean = false;
 
-  constructor(private workspaceService: WorkspaceService, private workspaceStateService: WorkspaceStateService,
-              private userService: UserService, private workspaceAttendanceService: WorkspaceAttendanceService
+  constructor(private workspaceStateService: WorkspaceStateService,
+              private userStateService: UserStateService
   ) {
   }
 
   ngOnInit(): void {
-    const workspaceSubscription = this.workspaceStateService.workspace$.subscribe(value => {
-      this.workspace = value
-      this.selectedTab = null;
-
-      if (value?.ownerId === this.user?.userId) {
-        this.clockedIn = true
-      } else this.clockedIn = !!(this.user?.isClockedIn && this.user.clockedInAt === this.workspace?.workspaceId);
+    const userSubscription = this.userStateService.user$.subscribe(user => {
+      this.user = user
+      this.getIsClockedIn()
     })
 
-    this.subscriptions.push(workspaceSubscription)
+    const workspaceSubscription = this.workspaceStateService.workspace$.subscribe(workspace => {
+      this.workspace = workspace
+      this.selectedTab = null
+      this.getIsClockedIn()
+    })
+
+    this.subscriptions.push(workspaceSubscription, userSubscription)
   }
 
   ngOnDestroy(): void {
     SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
-  clockIn(workspaceId: number) {
+  getIsClockedIn() {
+    this.isClockedIn = this.user?.userId === this.workspace?.ownerId
+      || !!(this.user?.isClockedIn && this.user.clockedInAt === this.workspace?.workspaceId)
+  }
+
+  async clockIn(workspaceId: number) {
     if (this.user?.isClockedIn) {
-      this.clockOut()
+      await this.userStateService.handleClockOut()
     }
 
-    this.workspaceAttendanceService.clockIn({workspaceId}).subscribe({
-      next: (value) => {
-        this.clockedIn = true
-        this.userService.clockIn(value.body.workspaceId)
-      }
-    })
+    this.userStateService.handleClockIn({workspaceId})
   }
 
-  clockOut() {
-    this.workspaceAttendanceService.clockOut().subscribe({
-      next: () => {
-        this.clockedIn = false
-        this.selectedTab = null
-        this.userService.clockOut()
-      }
-    })
-  }
-
-  selectTab(tab: Tab) {
+  selectTab(tab: Tab | null) {
     this.selectedTab = tab
   }
 }

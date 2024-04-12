@@ -10,6 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {CheckoutDialogComponent, CheckoutDialogOutput} from "./components/checkout-dialog/checkout-dialog.component";
 import {UserService} from "../../core/services/user/user.service";
 import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
+import {UserStateService} from "../../core/services/user/user-state.service";
 
 @Component({
   selector: 'app-home',
@@ -27,14 +28,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   user: User | null = null
 
   constructor(
-    userService: UserService,
+    private userService: UserService,
+    userStateService: UserStateService,
     private paymentService: PaymentService,
     protected authService: AuthService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private dialog: MatDialog
   ) {
-    const subscription = userService.user$.subscribe(user => this.user = user)
+    const subscription = userStateService.user$.subscribe(user => this.user = user)
     this.subscriptions.push(subscription)
   }
 

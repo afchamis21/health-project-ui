@@ -4,7 +4,7 @@
   </div>
 </div>
 <div *ngIf="workspace" class="h-full flex-1 flex flex-col">
-  <div *ngIf="!clockedIn" class="flex-1 flex items-center justify-center">
+  <div *ngIf="!isClockedIn" class="flex-1 flex items-center justify-center">
     <div class="p-4 rounded-md border-2 border-yellow-700 flex flex-col gap-8">
       Para começar a trabalhar bata o ponto.
       <button
@@ -15,10 +15,9 @@
       </button>
     </div>
   </div>
-  <div *ngIf="clockedIn" class="flex-1 flex flex-col">
+  <div *ngIf="isClockedIn" class="flex-1 flex flex-col">
     <app-tabs
       [activeTab]="selectedTab"
-      [isOwner]="user?.userId === workspace.ownerId"
       (onTabSelected)="selectTab($event)"
     ></app-tabs>
     <div [ngSwitch]="selectedTab?.name" class="flex-1 w-full p-4  flex flex-col items-center justify-center">

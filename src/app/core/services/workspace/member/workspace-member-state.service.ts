@@ -5,6 +5,8 @@ import {WorkspaceMember, WorkspaceMemberName} from "../../../types/workspace-mem
 import {PaginationData} from "../../../types/http";
 import {WorkspaceMemberService} from "./workspace-member.service";
 import {Workspace} from "../../../types/workspace";
+import {User} from '../../../types/user';
+import {UserStateService} from "../../user/user-state.service";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +34,8 @@ export class WorkspaceMemberStateService {
     return this.memberNamesSubject.asObservable()
   }
 
+  private user: User | null = null;
+
   addMemberName(member: WorkspaceMemberName): void {
     this.memberNamesSubject.next([
       ...this.memberNamesSubject.value,
@@ -53,17 +57,30 @@ export class WorkspaceMemberStateService {
 
   private workspace: Workspace | null = null;
 
-  constructor(workspaceStateService: WorkspaceStateService, private workspaceMemberService: WorkspaceMemberService) {
+  constructor(workspaceStateService: WorkspaceStateService, private workspaceMemberService: WorkspaceMemberService,
+              private userStateService: UserStateService) {
     workspaceStateService.workspace$.subscribe(workspace => {
       this.workspace = workspace
       this.resetState()
     })
+
+    userStateService.user$.subscribe(user => {
+      this.user = user
+    })
   }
 
   private resetState() {
-    this.membersSubject.next([])
-    this.memberNamesSubject.next([])
-    this.paginationData.page = 0;
+    if (this.workspace) {
+      this.fetchMembers()
+
+      if (this.user && this.user.userId === this.workspace.workspaceId) {
+        this.fetchAllMemberUsernames()
+      }
+    } else {
+      this.membersSubject.next([])
+      this.memberNamesSubject.next([])
+      this.paginationData.page = 0;
+    }
   }
 
   fetchMembers() {
@@ -84,8 +101,12 @@ export class WorkspaceMemberStateService {
     })
   }
 
-  fetchAllMemberUsernames(workspaceId: number) {
-    const sub = this.workspaceMemberService.getMembersNames(workspaceId).subscribe({
+  fetchAllMemberUsernames() {
+    if (!this.workspace) {
+      return
+    }
+
+    const sub = this.workspaceMemberService.getMembersNames(this.workspace.workspaceId).subscribe({
       next: (data) => {
         this.memberNamesSubject.next(data.body)
         sub.unsubscribe()
