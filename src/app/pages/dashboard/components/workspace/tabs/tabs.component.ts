@@ -7,6 +7,7 @@ import {UserStateService} from "../../../../../core/services/user/user-state.ser
 import {WorkspaceStateService} from "../../../../../core/services/workspace/workspace-state.service";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../../shared/utils/subscription-utils";
+import {ClockOutButtonComponent} from "../../../../../shared/components/clock-out-button/clock-out-button.component";
 
 @Component({
   selector: 'app-tabs',
@@ -14,7 +15,8 @@ import {SubscriptionUtils} from "../../../../../shared/utils/subscription-utils"
   imports: [
     NgForOf,
     NgIf,
-    NgClass
+    NgClass,
+    ClockOutButtonComponent
   ],
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css'
@@ -31,14 +33,17 @@ export class TabsComponent implements OnInit, OnChanges, OnDestroy {
 
   subscriptions: Subscription[] = []
 
-  constructor(protected userStateService: UserStateService, workspaceStateService: WorkspaceStateService) {
-    const userSub = userStateService.user$.subscribe({
+  constructor(protected userStateService: UserStateService, private workspaceStateService: WorkspaceStateService) {
+  }
+
+  ngOnInit(): void {
+    const userSub = this.userStateService.user$.subscribe({
       next: user => {
         this.user = user
       }
     })
 
-    const workspaceSub = workspaceStateService.workspace$.subscribe({
+    const workspaceSub = this.workspaceStateService.workspace$.subscribe({
       next: workspace => {
         this.workspace = workspace
         this.filterTabs()
@@ -46,9 +51,7 @@ export class TabsComponent implements OnInit, OnChanges, OnDestroy {
     })
 
     this.subscriptions.push(userSub, workspaceSub)
-  }
 
-  ngOnInit(): void {
     this.filterTabs()
   }
 

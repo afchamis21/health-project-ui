@@ -1,0 +1,7 @@
+<button
+  *ngIf="user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId"
+  [disabled]="!(user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId)"
+  (click)="userStateService.handleClockOut()"
+  class="ml-auto btn-warn"
+>Bater ponto
+</button>

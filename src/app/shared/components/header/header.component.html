@@ -4,12 +4,12 @@
 >
   <div class="mx-auto container flex justify-between items-center">
     <h1 class="font-bold text-2xl"><a routerLink="/">Meu aplicativo</a></h1>
-    <nav class="flex gap-4" *ngIf="!isLoggedIn">
+    <nav class="flex gap-4" *ngIf="!user">
       <a routerLink="/login" class="hover:underline">Login</a>
     </nav>
 
 
-    <div class="relative" *ngIf="isLoggedIn">
+    <div class="relative" *ngIf="user">
       <button type="button" (click)="toggleMenu()"
               class="leading-none rounded w-7 h-7 flex items-center justify-center transition-all hover:shadow-lg"
       >
@@ -18,7 +18,7 @@
       </button>
       <nav *ngIf="isMenuOpen"
            class="px-4 py-2 shadow absolute top-9 right-0 z-30 bg-slate-50 flex flex-col items-start text-slate-900 divide-y w-max">
-        <button (click)="handleLogout()" class="nav-link" type="button">
+        <button (click)="handleLogout()" class="nav-link warn" type="button">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
@@ -32,6 +32,7 @@
           </mat-icon>
           <span>Gerenciar conta</span>
         </a>
+        <app-clock-out-button class="py-2 w-full border-none" *ngIf="user.isClockedIn"></app-clock-out-button>
       </nav>
     </div>
   </div>

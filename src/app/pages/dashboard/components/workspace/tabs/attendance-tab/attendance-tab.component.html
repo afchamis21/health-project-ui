@@ -3,15 +3,13 @@
   <form class="flex gap-2" (submit)="handleFilterAttendances()">
     <select [(ngModel)]="selectedMemberId" name="names" id="names"
             class="px-2 py-1 border-2 bg-slate-50 border-gray-300 rounded hover:border-blue-800 transition-colors cursor-pointer">
-      <option disabled selected>Escolha um membro</option>
+      <option disabled [value]="0">Escolha um membro</option>
       <option [value]="null">Todos</option>
       <option *ngFor="let member of members" [value]="member.userId">{{ member.username }}</option>
     </select>
     <button type="submit"
-            class="
-            px-2 py-1 bg-slate-300 rounded hover:bg-blue-800 hover:text-slate-50 transition-colors
-            disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-slate-300 disabled:hover:text-slate-900
-            "
+            class="btn-secondary"
+            [disabled]="selectedMemberId === 0"
     >Filtrar
     </button>
   </form>

@@ -2,6 +2,10 @@
   @apply text-slate-900 transition-colors flex gap-2 items-center hover:underline hover:text-yellow-700 py-2 w-full;
 }
 
+.nav-link.warn {
+  @apply hover:text-red-700
+}
+
 .nav-link > span {
   @apply leading-none;
 }
@@ -11,5 +15,5 @@
 }
 
 .colored-header {
-  @apply bg-slate-100 text-yellow-700 shadow
+  @apply bg-slate-100 text-slate-950 shadow
 }

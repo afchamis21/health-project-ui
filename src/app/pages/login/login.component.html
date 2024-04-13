@@ -1,12 +1,12 @@
 <section class="flex flex-col gap-4 items-center w-full px-8">
   <div class="flex flex-col gap-10 p-8 shadow max-w-md w-full bg-slate-50 items-center">
-    <h1 class="font-bold text-yellow-700 text-2xl">Login</h1>
+    <h1 class="font-bold text-blue-800 text-2xl">Login</h1>
     <form [formGroup]="loginForm" (ngSubmit)="handleLogin()"
           class="flex flex-col gap-6 max-w-md w-full">
       <label for="email" class="flex flex-col gap-0.5">
         <input id="email" type="email" name="email" formControlName="email" placeholder="exemplo@email.com"
                autocomplete="email"
-               class="input"/>
+               class="input-primary"/>
         <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.getError('required')" class="error">
           Este campo é obrigatório
         </small>
@@ -16,13 +16,13 @@
       </label>
       <label for="password" class="flex flex-col gap-0.5">
         <input id="password" name="password" type="password" formControlName="password" placeholder="Senha"
-               autocomplete="current-password" class="input"/>
+               autocomplete="current-password" class="input-primary"/>
         <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error">
           Este campo é obrigatório
         </small>
       </label>
       <button
-        class="mt-4 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:shadow-md hover:shadow-slate-400 transition-all">
+        class="btn-primary">
         <span *ngIf="!isLoggingIn">Entrar</span>
         <loader-spinner *ngIf="isLoggingIn"></loader-spinner>
       </button>

@@ -1,9 +1,9 @@
 :host {
-  @apply flex-1 flex flex-col;
+  @apply flex-1 flex flex-col gap-8;
 }
 
 .table-wrapper {
-  @apply overflow-y-auto h-[50vh] mt-8 rounded;
+  @apply overflow-y-auto h-[50vh] rounded;
 
   table {
     @apply text-left border-collapse table-auto w-full;

@@ -10,11 +10,5 @@
   >
     {{ formatDisplayText(tab.displayText) }}
   </button>
-  <button
-    *ngIf="user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId"
-    [disabled]="!(user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId)"
-    (click)="userStateService.handleClockOut()"
-    class="ml-auto px-3 py-1 rounded-lg transition-colors bg-slate-300 hover:bg-red-600 hover:text-slate-50"
-  >Bater ponto
-  </button>
+  <app-clock-out-button></app-clock-out-button>
 </header>

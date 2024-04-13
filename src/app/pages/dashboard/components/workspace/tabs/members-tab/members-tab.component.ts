@@ -119,6 +119,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
         this.workspaceMemberStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isMemberActive = false
+            this.toastr.info("Colaborador desativado com sucesso!")
           }
 
           return member
@@ -133,6 +134,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
         this.workspaceMemberStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isMemberActive = true
+            this.toastr.info("Colaborador ativado com sucesso!")
           }
 
           return member

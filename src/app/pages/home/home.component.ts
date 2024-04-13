@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (params.hasOwnProperty('checkoutSuccessful')) {
         const checkoutSuccessful: boolean = JSON.parse(params['checkoutSuccessful'])
         if (checkoutSuccessful) {
-          this.toastr.success("Confira seu email para completar o cadastro")
+          this.toastr.info("Confira seu email para completar o cadastro")
         } else {
           this.toastr.warning("Esperamos você em outro momento!")
         }

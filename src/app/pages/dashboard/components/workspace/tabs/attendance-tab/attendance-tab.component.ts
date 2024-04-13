@@ -37,7 +37,7 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  selectedMemberId: number | null = null
+  selectedMemberId: number | null = 0
   isLoadingAttendances: boolean = true;
 
   paginationData: PaginationData;
@@ -72,6 +72,7 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
 
   handleFilterAttendances() {
     this.workspaceAttendanceStateService.fetchAttendances(this.selectedMemberId)
+    this.selectedMemberId = 0
   }
 
   formatDate(date: Date) {

@@ -6,6 +6,9 @@ import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../utils/subscription-utils";
 import {PaymentService} from "../../../core/services/payment/payment.service";
 import {MatIconModule} from "@angular/material/icon";
+import {ClockOutButtonComponent} from "../clock-out-button/clock-out-button.component";
+import {UserStateService} from "../../../core/services/user/user-state.service";
+import {User} from '../../../core/types/user';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +16,8 @@ import {MatIconModule} from "@angular/material/icon";
   imports: [
     RouterLink,
     NgIf,
-    MatIconModule
+    MatIconModule,
+    ClockOutButtonComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -21,18 +25,23 @@ import {MatIconModule} from "@angular/material/icon";
 export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false
 
-  constructor(protected authService: AuthService, protected paymentService: PaymentService, private router: Router) {
+  constructor(protected authService: AuthService, protected paymentService: PaymentService,
+              private router: Router, private userStateService: UserStateService) {
   }
 
   header?: HTMLElement
   subscriptions: Subscription[] = []
-  isLoggedIn = false
+  user: User | null = null
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen
   }
 
-  handleLogout() {
+  async handleLogout() {
+    if (this.userStateService.currentUserValue?.isClockedIn) {
+      await this.userStateService.handleClockOut()
+    }
+
     const subscription = this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['/login'])
@@ -47,9 +56,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.header = this.getHeader()
-
-    const authSubscription = this.authService.isLoggedIn$.subscribe(value => this.isLoggedIn = value)
-    this.subscriptions.push(authSubscription)
 
     const routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -66,12 +72,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
             classList?.remove('transparent-header')
           }
         }
-
-
       }
     });
 
-    this.subscriptions.push(routerSubscription)
+    const userSubscription = this.userStateService.user$.subscribe((data) => {
+      this.user = data
+    })
+
+    this.subscriptions.push(routerSubscription, userSubscription)
   }
 
   ngOnDestroy(): void {

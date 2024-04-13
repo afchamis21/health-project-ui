@@ -5,7 +5,6 @@ import {WorkspaceMember, WorkspaceMemberName} from "../../../types/workspace-mem
 import {PaginationData} from "../../../types/http";
 import {WorkspaceMemberService} from "./workspace-member.service";
 import {Workspace} from "../../../types/workspace";
-import {User} from '../../../types/user';
 import {UserStateService} from "../../user/user-state.service";
 
 @Injectable({
@@ -34,8 +33,6 @@ export class WorkspaceMemberStateService {
     return this.memberNamesSubject.asObservable()
   }
 
-  private user: User | null = null;
-
   addMemberName(member: WorkspaceMemberName): void {
     this.memberNamesSubject.next([
       ...this.memberNamesSubject.value,
@@ -63,17 +60,17 @@ export class WorkspaceMemberStateService {
       this.workspace = workspace
       this.resetState()
     })
-
-    userStateService.user$.subscribe(user => {
-      this.user = user
-    })
   }
 
   private resetState() {
     if (this.workspace) {
       this.fetchMembers()
 
-      if (this.user && this.user.userId === this.workspace.workspaceId) {
+      const user = this.userStateService.currentUserValue
+      console.log("Valor de user: ", user)
+      console.log("Valor de workspace: ", this.workspace)
+      if (user && user.userId === this.workspace.ownerId) {
+        console.log("Entrou aqui")
         this.fetchAllMemberUsernames()
       }
     } else {
@@ -105,9 +102,10 @@ export class WorkspaceMemberStateService {
     if (!this.workspace) {
       return
     }
-
+    console.log("Buscando nomes")
     const sub = this.workspaceMemberService.getMembersNames(this.workspace.workspaceId).subscribe({
       next: (data) => {
+        console.log("Resultado", data.body)
         this.memberNamesSubject.next(data.body)
         sub.unsubscribe()
       }

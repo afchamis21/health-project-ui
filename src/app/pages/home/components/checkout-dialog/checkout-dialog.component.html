@@ -1,11 +1,11 @@
 <div
-  class="flex flex-col gap-6 py-8 px-12 bg-slate-50 rounded">
+  class="flex flex-col gap-6 py-8 px-12 bg-slate-50 rounded md:max-w-[50vw]">
   <button (click)="closeDialog()"
           class="outline-0 absolute top-2 right-2 leading-none text-sm hover:text-red-500 transition-colors">
     <mat-icon>close</mat-icon>
   </button>
   <div class="flex flex-col gap-2">
-    <h2 class="text-2xl text-yellow-700">Que email você deseja usar ?</h2>
+    <h2 class="text-2xl font-bold">Que email você deseja usar ?</h2>
     <p>Esse e-mail será importante, pois ele será usado para acessar sua conta, e nele que você
       receberá informações
       de pagamento </p>
@@ -15,7 +15,7 @@
     <label for="email" class="flex flex-col gap-0.5 w-full">
       <input id="email" type="email" name="email" formControlName="email" placeholder="exemplo@email.com"
              autocomplete="email"
-             class="input"
+             class="input-primary"
       />
       <small *ngIf="checkoutForm.get('email')?.touched && checkoutForm.get('email')?.getError('required')"
              class="error">
@@ -26,7 +26,9 @@
       </small>
     </label>
     <button type="submit"
-            class="mt-4 bg-blue-950 px-6 py-2 rounded-lg text-slate-50 hover:brightness-110 transition-all">
+            class="btn-primary"
+            [disabled]="!checkoutForm.valid"
+    >
       Confirmar
     </button>
   </form>

@@ -1,15 +1,3 @@
-.input {
-  @apply border-2 border-gray-900 rounded px-2 py-2 transition-colors;
-}
-
-.input:hover, .input:focus {
-  @apply border-yellow-700 outline-0
-}
-
-.error {
-  @apply text-red-500 text-sm pl-2
-}
-
 :host {
   @apply flex-1 flex flex-col items-center justify-center
 }

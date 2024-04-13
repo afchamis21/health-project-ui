@@ -134,7 +134,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (value.complete) {
         this.workspaceService.createWorkspace({name: value.value.name}).subscribe({
           next: () => {
-            this.toastr.success(`Paciente ${value.value.name} cadastrado com sucesso!`)
+            this.toastr.info(`Paciente ${value.value.name} cadastrado com sucesso!`)
             this.fetchWorkspaces()
           }
         })

@@ -77,7 +77,7 @@ export class UserStateService {
   handleUpdateUser(data: UpdateUserRequest) {
     this.userService.updateUser(data).subscribe({
       next: () => {
-        this.toastr.success("Usuário atualizado com sucesso!")
+        this.toastr.info("Usuário atualizado com sucesso!")
         this.authService.forceLogout()
       }
     })
@@ -86,7 +86,7 @@ export class UserStateService {
   handleCompleteRegistration(data: CompleteRegistrationRequest) {
     this.userService.completeRegistration(data).subscribe({
       next: () => {
-        this.toastr.success("Usuário atualizado com sucesso!")
+        this.toastr.info("Usuário atualizado com sucesso!")
         this.authService.forceLogout()
       }
     })

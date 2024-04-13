@@ -61,7 +61,7 @@ export class WorkspaceAttendanceStateService {
     this.loadingSubject.next(true)
 
     const sub = this.workspaceAttendanceService.getAttendances(
-      this.workspace.workspaceId, this.paginationData, memberId
+      this.workspace.workspaceId, this.paginationData, memberId === 0 ? null : memberId
     ).subscribe({
       next: (data) => {
         this.attendanceSubject.next(data.body.data)
