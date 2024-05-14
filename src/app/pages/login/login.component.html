@@ -22,8 +22,8 @@
         </small>
       </label>
       <button
-        class="btn-primary">
-        <span *ngIf="!isLoggingIn">Entrar</span>
+        class="btn-primary flex justify-center gap-2" [disabled]="isLoggingIn">
+        {{ isLoggingIn ? "Entrando" : "Entrar" }}
         <loader-spinner *ngIf="isLoggingIn"></loader-spinner>
       </button>
     </form>

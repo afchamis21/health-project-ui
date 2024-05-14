@@ -62,3 +62,41 @@ export function passwordValidator(control: AbstractControl) {
 
   return null;
 }
+
+export function rgDocumentValidator(control: AbstractControl) {
+  const documentControl = control.get('document');
+  const document: string = documentControl?.value.replace(/[^0-9Xx]/g, '');
+
+  if (document.length < 9) {
+    return null
+  }
+
+  const lastDigit = document.charAt(document.length - 1)
+
+  // Calculate the verification digit
+  let sum = 0;
+  for (let i = 0; i < 8; i++) {
+    const digit = parseInt(document.charAt(i));
+    sum += digit * (i + 1);
+  }
+
+  const remainder = sum % 11;
+  const verificationDigit = 11 - remainder;
+
+  const formatRg = (rg: string) => {
+    return `${rg.slice(0, 2)}.${rg.slice(2, 5)}.${rg.slice(5, 8)}-${rg.charAt(8)}`;
+  }
+
+  if (verificationDigit.toString() === lastDigit
+    || verificationDigit === 10 && lastDigit === "X" // Edge case that when the verification digit is 10, th rg has an X
+    || verificationDigit === 11 && lastDigit === "0" // Edge case that when the verification digit is 11, it is instead a 0
+  ) {
+    const formatedValue = formatRg(document)
+    documentControl?.setValue(formatedValue)
+    return null
+  }
+
+  // Check if the calculated verification digit matches the provided verification digit
+  documentControl?.setErrors({document: true, ...documentControl?.errors});
+  return null
+}

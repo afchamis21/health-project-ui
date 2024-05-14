@@ -8,7 +8,6 @@ import {User} from "../../core/types/user";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
-import {UserService} from "../../core/services/user/user.service";
 import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 import {UserStateService} from "../../core/services/user/user-state.service";
 
@@ -30,7 +29,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private userStateService: UserStateService,
     private authService: AuthService,
-    private userService: UserService,
     private toastr: ToastrService,
     private router: Router
   ) {

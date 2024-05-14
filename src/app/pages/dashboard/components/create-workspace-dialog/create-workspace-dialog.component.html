@@ -5,18 +5,56 @@
   </button>
   <h2 class="text-2xl font-bold text-center">Adicionar paciente</h2>
   <p>Preencha todos os campos para cadastrar um novo paciente</p>
-  <form class="flex flex-col gap-4" [formGroup]="createWorkspaceForm" (submit)="submitForm()">
-    <label for="name" class="flex gap-2">Nome do paciente:
+  <form class="flex flex-col gap-4 w-full" [formGroup]="createWorkspaceForm" (submit)="submitForm()">
+    <div class="flex gap-2 flex-wrap">
+      <label for="name" class="flex gap-2 flex-col">
+        <span class="text-sm">Primeiro nome</span>
+        <input
+          formControlName="name"
+          id="name"
+          name="name"
+          placeholder="Primeiro nome"
+          class="input-primary"
+        >
+        <small *ngIf="createWorkspaceForm.get('name')?.touched && createWorkspaceForm.get('name')?.getError('required')"
+               class="error">
+          Este campo é obrigatório.
+        </small>
+      </label>
+      <label for="name" class="flex gap-2 flex-col">
+        <span class="text-sm">Sobrenome</span>
+        <input
+          formControlName="surname"
+          id="surname"
+          name="surname"
+          placeholder="Sobrenome"
+          class="input-primary"
+        >
+      </label>
+    </div>
+    <label for="name" class="flex gap-2 flex-col">
+      <span class="text-sm">Documento</span>
       <input
-        formControlName="name"
-        id="name"
-        name="name"
-        placeholder="Nome do paciente"
-        class="px-2 bg-transparent border-b-2 border-slate-400 focus:outline-0 focus:border-blue-950 hover:border-blue-950"
+        formControlName="document"
+        id="document"
+        name="document"
+        placeholder="O RG do paciente"
+        class="input-primary"
       >
-      <small *ngIf="createWorkspaceForm.get('name')?.touched && createWorkspaceForm.get('name')?.getError('required')"
-             class="error">
+      <small
+        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('required')"
+        class="error">
         Este campo é obrigatório.
+      </small>
+      <small
+        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('pattern')"
+        class="error">
+        Formato inválido. Ex: XX.XXX.XXX-X
+      </small>
+      <small
+        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('document')"
+        class="error">
+        RG inválido.
       </small>
     </label>
     <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800">Adicionar</button>

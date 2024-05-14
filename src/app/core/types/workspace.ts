@@ -1,4 +1,5 @@
 import {BaseResponse, PaginatedResponse} from "./http";
+import {Patient} from "./patient";
 
 export type Workspace = {
   workspaceId: number
@@ -8,9 +9,7 @@ export type Workspace = {
   createDt: Date
 }
 
-export type CreateWorkspaceRequest = {
-  name: string
-}
+export type CreateWorkspaceRequest = Partial<Omit<Patient, "patientId">>
 
 export type CreateWorkspaceResponse = BaseResponse<Workspace>
 
