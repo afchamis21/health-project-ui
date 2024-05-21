@@ -57,7 +57,7 @@
   </ul>
 
   <app-page-controller
-    *ngIf="isMenuOpen"
+    *ngIf="isMenuOpen && workspaces?.length !== 0"
     [currentPage]="paginationData.page"
     [lastPage]="paginationData.lastPage"
     [controllerSize]="paginationData.maxPages"

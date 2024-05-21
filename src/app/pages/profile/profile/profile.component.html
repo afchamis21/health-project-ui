@@ -102,13 +102,13 @@
   <section class="w-full md:flex-1 md:min-w-60">
     <button (click)="goToBillingPortal()"
             [disabled]="isGoingToBillingPortal"
-            class="btn-primary large">
+            class="btn-primary large"
+            *ngIf="user.isPaymentActive">
             <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
               <mat-icon>settings</mat-icon> Gerencie sua assinatura
             </span>
-      <span *ngIf="isGoingToBillingPortal" class="animate-spin leading-[0]">
-              <mat-icon>progress_activity</mat-icon>
-            </span>
+            <loader-spinner></loader-spinner>
+            <!-- TODO -->
     </button>
   </section>
 </main>

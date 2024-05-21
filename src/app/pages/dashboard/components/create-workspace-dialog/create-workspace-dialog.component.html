@@ -7,7 +7,7 @@
   <p>Preencha todos os campos para cadastrar um novo paciente</p>
   <form class="flex flex-col gap-4 w-full" [formGroup]="createWorkspaceForm" (submit)="submitForm()">
     <div class="flex gap-2 flex-wrap">
-      <label for="name" class="flex gap-2 flex-col">
+      <label for="name" class="flex flex-1 gap-2 flex-col">
         <span class="text-sm">Primeiro nome</span>
         <input
           formControlName="name"
@@ -21,7 +21,7 @@
           Este campo é obrigatório.
         </small>
       </label>
-      <label for="name" class="flex gap-2 flex-col">
+      <label for="surname" class="flex flex-1 gap-2 flex-col">
         <span class="text-sm">Sobrenome</span>
         <input
           formControlName="surname"
@@ -30,6 +30,10 @@
           placeholder="Sobrenome"
           class="input-primary"
         >
+        <small *ngIf="createWorkspaceForm.get('surname')?.touched && createWorkspaceForm.get('surname')?.getError('required')"
+               class="error">
+          Este campo é obrigatório.
+        </small>
       </label>
     </div>
     <label for="name" class="flex gap-2 flex-col">
