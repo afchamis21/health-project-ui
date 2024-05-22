@@ -6,6 +6,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {confirmPasswordValidator, passwordValidator} from "../../../core/validators/form-validators";
 import {PaymentService} from "../../../core/services/payment/payment.service";
 import {UserStateService} from "../../../core/services/user/user-state.service";
+import {SpinnerComponent} from "../../../shared/components/loader/spinner/spinner.component";
 
 @Component({
   selector: 'app-profile',
@@ -13,7 +14,8 @@ import {UserStateService} from "../../../core/services/user/user-state.service";
   imports: [
     MatIconModule,
     NgIf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SpinnerComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'

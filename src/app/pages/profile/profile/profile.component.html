@@ -107,8 +107,7 @@
             <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
               <mat-icon>settings</mat-icon> Gerencie sua assinatura
             </span>
-            <loader-spinner></loader-spinner>
-            <!-- TODO -->
+      <loader-spinner *ngIf="isGoingToBillingPortal" color="neutral" size="M"></loader-spinner>
     </button>
   </section>
 </main>
