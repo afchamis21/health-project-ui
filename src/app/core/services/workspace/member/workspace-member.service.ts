@@ -1,11 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PaginationData} from "../../../types/http";
-import {
-  CreateWorkspaceMemberRequest,
-  CreateWorkspaceMemberResponse,
-  GetWorkspaceMembersNamesResponse,
-  GetWorkspaceMembersResponse
-} from "../../../types/workspace-member";
+import {GetCollaboratorsNamesResponse, GetCollaboratorsResponse} from "../../../types/collaborator";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../environments/environment";
 
@@ -13,41 +8,44 @@ import {environment} from "../../../../../environments/environment";
   providedIn: 'root'
 })
 export class WorkspaceMemberService {
-  private baseUrl = environment.apiURL + "/workspace"
+  private baseUrl = environment.apiURL + "/patient/collaborators"
 
   constructor(private http: HttpClient) {
   }
 
-  getMembers(workspaceId: number, paginationData: PaginationData) {
-    return this.http.get<GetWorkspaceMembersResponse>(`${this.baseUrl}/${workspaceId}/members`, {
+  getMembers(patientId: number, paginationData: PaginationData) {
+    return this.http.get<GetCollaboratorsResponse>(`${this.baseUrl}`, {
       params: {
-        ...paginationData
+        ...paginationData,
+        patientId
       }
     })
   }
 
-  addMember(workspaceId: number, data: CreateWorkspaceMemberRequest) {
-    return this.http.post<CreateWorkspaceMemberResponse>(`${this.baseUrl}/${workspaceId}/members`, data)
-  }
-
-  activateMember(workspaceId: number, userId: number) {
-    return this.http.patch(`${this.baseUrl}/${workspaceId}/members/activate`, {}, {
+  activateMember(patientId: number, userId: number) {
+    return this.http.patch(`${this.baseUrl}/activate`, {}, {
       params: {
-        userId
+        userId,
+        patientId
       }
     })
   }
 
-  deactivateMember(workspaceId: number, userId: number) {
-    return this.http.patch(`${this.baseUrl}/${workspaceId}/members/deactivate`, {}, {
+  deactivateMember(patientId: number, userId: number) {
+    return this.http.patch(`${this.baseUrl}/deactivate`, {}, {
       params: {
-        userId
+        userId,
+        patientId
       }
     })
   }
 
-  getMembersNames(workspaceId: number) {
-    return this.http.get<GetWorkspaceMembersNamesResponse>(`${this.baseUrl}/${workspaceId}/members/names`)
+  getMembersNames(patientId: number) {
+    return this.http.get<GetCollaboratorsNamesResponse>(`${this.baseUrl}/names`, {
+      params: {
+        patientId
+      }
+    })
 
   }
 }

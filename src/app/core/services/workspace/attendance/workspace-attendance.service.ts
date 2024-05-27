@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ClockInRequest, GetAttendanceResponse, GetAttendancesResponse} from "../../../types/attendance";
-import {environment} from "../../../../../environments/environment";
+import {GetAttendanceResponse, GetAttendancesResponse} from "../../../types/attendance";
 import {HttpClient} from "@angular/common/http";
 import {PaginationData} from "../../../types/http";
 
@@ -8,27 +7,29 @@ import {PaginationData} from "../../../types/http";
   providedIn: 'root'
 })
 export class WorkspaceAttendanceService {
-  private baseUrl = environment.apiURL + "/workspace"
-
   constructor(private http: HttpClient) {
   }
 
-  clockIn(clockInRequest: ClockInRequest) {
-    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-in`, clockInRequest)
+  clockIn(patientId: number) {
+    return this.http.post<GetAttendanceResponse>(`/user/clock-in`, {}, {
+      params: {
+        patientId
+      }
+    })
   }
 
   clockOut() {
-    return this.http.post<GetAttendanceResponse>(`${this.baseUrl}/clock-out`, {})
+    return this.http.post<GetAttendanceResponse>(`/user/clock-out`, {})
   }
 
-  getAttendances(workspaceId: number, paginationInfo: PaginationData, memberId: number | null) {
-    const params: any = {...paginationInfo};
+  getAttendances(patientId: number, paginationInfo: PaginationData, memberId: number | null) {
+    const params: any = {...paginationInfo, patientId};
     // @ts-ignore
     if (memberId !== null && memberId !== "null") {
       params.userId = memberId;
     }
 
-    return this.http.get<GetAttendancesResponse>(`${this.baseUrl}/${workspaceId}/attendances`, {
+    return this.http.get<GetAttendancesResponse>(`/patient/attendance`, {
       params
     })
   }
