@@ -6,7 +6,7 @@
         'bg-blue-800 text-slate-50': isSelected,
         'bg-slate-200 hover:bg-opacity-80': !isSelected
         }"
-        (click)="selectWorkspace()"
+        (click)="selectPatient()"
 >
   <span class="
     flex gap-2 items-center whitespace-nowrap flex-nowrap
@@ -15,7 +15,7 @@
   >
     <mat-icon>person</mat-icon>
     <span>
-      {{ isOpen ? workspace.name : abbreviatedName }}
+      {{ isOpen ? patientSummary.name : abbreviatedName }}
     </span>
   </span>
 </button>

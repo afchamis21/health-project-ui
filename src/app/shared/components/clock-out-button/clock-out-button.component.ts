@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../../core/types/user";
 import {UserStateService} from "../../../core/services/user/user-state.service";
-import {WorkspaceStateService} from "../../../core/services/workspace/workspace-state.service";
+import {PatientStateService} from "../../../core/services/patient/patient-state.service";
 import {Subscription} from "rxjs";
-import {Workspace} from "../../../core/types/workspace";
 import {NgIf} from "@angular/common";
+import {PatientSummary} from "../../../core/types/patient";
 
 @Component({
   selector: 'app-clock-out-button',
@@ -17,25 +17,25 @@ import {NgIf} from "@angular/common";
 })
 export class ClockOutButtonComponent implements OnInit {
   user: User | null = null
-  workspace: Workspace | null = null
+  patient: PatientSummary | null = null
   subscriptions: Subscription[] = []
 
-  constructor(protected userStateService: UserStateService, private workspaceStateService: WorkspaceStateService) {
+  constructor(protected userStateService: UserStateService, private patientStateService: PatientStateService) {
   }
 
   ngOnInit(): void {
-    const userSub = this.userStateService.user$.subscribe({
+    const user$ = this.userStateService.user$.subscribe({
       next: user => {
         this.user = user
       }
     })
 
-    const workspaceSub = this.workspaceStateService.workspace$.subscribe({
-      next: workspace => {
-        this.workspace = workspace
+    const patient$ = this.patientStateService.patientSummary$.subscribe({
+      next: value => {
+        this.patient = value
       }
     })
 
-    this.subscriptions.push(userSub, workspaceSub)
+    this.subscriptions.push(user$, patient$)
   }
 }

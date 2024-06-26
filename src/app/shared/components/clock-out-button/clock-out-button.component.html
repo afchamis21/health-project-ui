@@ -1,6 +1,6 @@
 <button
-  *ngIf="workspace && user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId"
-  [disabled]="!(user?.isClockedIn && user?.clockedInAt === workspace?.workspaceId)"
+  *ngIf="patient && user?.isClockedIn && user?.clockedInAt === patient?.patientId"
+  [disabled]="!(user?.isClockedIn && user?.clockedInAt === patient?.patientId)"
   (click)="userStateService.handleClockOut()"
   class="ml-auto btn-warn"
 >Bater ponto

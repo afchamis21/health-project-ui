@@ -1,39 +1,39 @@
 import {Injectable} from '@angular/core';
-import {WorkspaceStateService} from "../workspace-state.service";
+import {PatientStateService} from "../patient-state.service";
 import {BehaviorSubject, Observable} from "rxjs";
-import {WorkspaceMember, WorkspaceMemberName} from "../../../types/workspace-member";
+import {Collaborator, PatientCollaboratorName} from "../../../types/collaborator";
 import {PaginationData} from "../../../types/http";
-import {WorkspaceMemberService} from "./workspace-member.service";
-import {Workspace} from "../../../types/workspace";
+import {CollaboratorService} from "./collaborator.service";
 import {UserStateService} from "../../user/user-state.service";
+import {PatientSummary} from "../../../types/patient";
 
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceMemberStateService {
+export class CollaboratorStateService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
   get isLoading$(): Observable<boolean> {
     return this.loadingSubject.asObservable()
   }
 
-  private membersSubject = new BehaviorSubject<WorkspaceMember[]>([])
+  private membersSubject = new BehaviorSubject<Collaborator[]>([])
 
-  get members$(): Observable<WorkspaceMember[]> {
+  get members$(): Observable<Collaborator[]> {
     return this.membersSubject.asObservable();
   }
 
-  set members$(members: WorkspaceMember[]) {
+  set members$(members: Collaborator[]) {
     this.membersSubject.next(members);
   }
 
-  private memberNamesSubject = new BehaviorSubject<WorkspaceMemberName[]>([]);
+  private memberNamesSubject = new BehaviorSubject<PatientCollaboratorName[]>([]);
 
-  get memberNames$(): Observable<WorkspaceMemberName[]> {
+  get memberNames$(): Observable<PatientCollaboratorName[]> {
     return this.memberNamesSubject.asObservable()
   }
 
-  addMemberName(member: WorkspaceMemberName): void {
+  addMemberName(member: PatientCollaboratorName): void {
     this.memberNamesSubject.next([
       ...this.memberNamesSubject.value,
       member
@@ -52,24 +52,22 @@ export class WorkspaceMemberStateService {
     return this.paginationData;
   }
 
-  private workspace: Workspace | null = null;
+  private patientSummary: PatientSummary | null = null;
 
-  constructor(workspaceStateService: WorkspaceStateService, private workspaceMemberService: WorkspaceMemberService,
+  constructor(patientStateService: PatientStateService, private collaboratorService: CollaboratorService,
               private userStateService: UserStateService) {
-    workspaceStateService.workspace$.subscribe(workspace => {
-      this.workspace = workspace
+    patientStateService.patientSummary$.subscribe(value => {
+      this.patientSummary = value
       this.resetState()
     })
   }
 
   private resetState() {
-    if (this.workspace) {
+    if (this.patientSummary) {
       this.fetchMembers()
 
       const user = this.userStateService.currentUserValue
-      console.log("Valor de user: ", user)
-      console.log("Valor de workspace: ", this.workspace)
-      if (user && user.userId === this.workspace.ownerId) {
+      if (user && user.userId === this.patientSummary.ownerId) {
         console.log("Entrou aqui")
         this.fetchAllMemberUsernames()
       }
@@ -81,12 +79,12 @@ export class WorkspaceMemberStateService {
   }
 
   fetchMembers() {
-    if (!this.workspace) {
+    if (!this.patientSummary) {
       return
     }
 
     this.loadingSubject.next(true);
-    const sub = this.workspaceMemberService.getMembers(this.workspace.workspaceId, this.paginationData).subscribe({
+    const sub = this.collaboratorService.getMembers(this.patientSummary.patientId, this.paginationData).subscribe({
       next: (value) => {
         this.loadingSubject.next(false);
 
@@ -99,11 +97,11 @@ export class WorkspaceMemberStateService {
   }
 
   fetchAllMemberUsernames() {
-    if (!this.workspace) {
+    if (!this.patientSummary) {
       return
     }
     console.log("Buscando nomes")
-    const sub = this.workspaceMemberService.getMembersNames(this.workspace.workspaceId).subscribe({
+    const sub = this.collaboratorService.getMembersNames(this.patientSummary.patientId).subscribe({
       next: (data) => {
         console.log("Resultado", data.body)
         this.memberNamesSubject.next(data.body)

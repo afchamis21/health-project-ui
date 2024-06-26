@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {UserService} from "./user.service";
-import {WorkspaceAttendanceService} from "../workspace/attendance/workspace-attendance.service";
+import {AttendanceService} from "../patient/attendance/attendance.service";
 import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
 import {CompleteRegistrationRequest, UpdateUserRequest, User} from "../../types/user";
-import {ClockInRequest} from "../../types/attendance";
 import {AuthService} from "../auth/auth.service";
 import {ToastrService} from "ngx-toastr";
 
@@ -21,7 +20,7 @@ export class UserStateService {
     return this.userSubject.value
   }
 
-  constructor(private userService: UserService, private workspaceAttendanceService: WorkspaceAttendanceService,
+  constructor(private userService: UserService, private attendanceService: AttendanceService,
               private authService: AuthService, private toastr: ToastrService
   ) {
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
@@ -40,12 +39,12 @@ export class UserStateService {
     })
   }
 
-  handleClockIn(data: ClockInRequest) {
+  handleClockIn(patientId: number) {
     if (!this.userSubject.value) {
       return
     }
 
-    this.workspaceAttendanceService.clockIn(data).subscribe({
+    this.attendanceService.clockIn(patientId).subscribe({
       next: (data) => {
         if (!this.userSubject.value) {
           return
@@ -54,7 +53,7 @@ export class UserStateService {
         this.userSubject.next({
           ...this.userSubject.value,
           isClockedIn: true,
-          clockedInAt: data.body.workspaceId
+          clockedInAt: data.body.patientId
         })
       }
     })
@@ -65,7 +64,7 @@ export class UserStateService {
       return
     }
 
-    const sub = this.workspaceAttendanceService.clockOut()
+    const sub = this.attendanceService.clockOut()
     await firstValueFrom(sub)
     this.userSubject.next({
       ...this.userSubject.value,

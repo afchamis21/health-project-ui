@@ -2,12 +2,12 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Tab, tabs} from "../../../../../core/types/tab";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {User} from "../../../../../core/types/user";
-import {Workspace} from "../../../../../core/types/workspace";
 import {UserStateService} from "../../../../../core/services/user/user-state.service";
-import {WorkspaceStateService} from "../../../../../core/services/workspace/workspace-state.service";
+import {PatientStateService} from "../../../../../core/services/patient/patient-state.service";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../../shared/utils/subscription-utils";
 import {ClockOutButtonComponent} from "../../../../../shared/components/clock-out-button/clock-out-button.component";
+import {PatientSummary} from "../../../../../core/types/patient";
 
 @Component({
   selector: 'app-tabs',
@@ -26,31 +26,31 @@ export class TabsComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() onTabSelected = new EventEmitter<Tab | null>()
 
-  workspace: Workspace | null = null
+  patientSummary: PatientSummary | null = null
   tabs = tabs
   filteredTabs: Tab[] = []
   user: User | null = null
 
   subscriptions: Subscription[] = []
 
-  constructor(protected userStateService: UserStateService, private workspaceStateService: WorkspaceStateService) {
+  constructor(protected userStateService: UserStateService, private patientStateService: PatientStateService) {
   }
 
   ngOnInit(): void {
-    const userSub = this.userStateService.user$.subscribe({
+    const user$ = this.userStateService.user$.subscribe({
       next: user => {
         this.user = user
       }
     })
 
-    const workspaceSub = this.workspaceStateService.workspace$.subscribe({
-      next: workspace => {
-        this.workspace = workspace
+    const patientSummary$ = this.patientStateService.patientSummary$.subscribe({
+      next: value => {
+        this.patientSummary = value
         this.filterTabs()
       }
     })
 
-    this.subscriptions.push(userSub, workspaceSub)
+    this.subscriptions.push(user$, patientSummary$)
 
     this.filterTabs()
   }
@@ -68,7 +68,7 @@ export class TabsComponent implements OnInit, OnChanges, OnDestroy {
 
   filterTabs() {
     this.filteredTabs = Object.values(this.tabs).filter(tab => {
-      return !tab.ownerOnly || (tab.ownerOnly && this.user?.userId === this.workspace?.ownerId)
+      return !tab.ownerOnly || (tab.ownerOnly && this.user?.userId === this.patientSummary?.ownerId)
     })
   }
 

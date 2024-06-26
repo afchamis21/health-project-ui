@@ -5,7 +5,7 @@
   </button>
   <h2 class="text-2xl font-bold text-center">Adicionar paciente</h2>
   <p>Preencha todos os campos para cadastrar um novo paciente</p>
-  <form class="flex flex-col gap-4 w-full" [formGroup]="createWorkspaceForm" (submit)="submitForm()">
+  <form class="flex flex-col gap-4 w-full" [formGroup]="createPatientForm" (submit)="submitForm()">
     <div class="flex gap-2 flex-wrap">
       <label for="name" class="flex flex-1 gap-2 flex-col">
         <span class="text-sm">Primeiro nome</span>
@@ -16,7 +16,7 @@
           placeholder="Primeiro nome"
           class="input-primary"
         >
-        <small *ngIf="createWorkspaceForm.get('name')?.touched && createWorkspaceForm.get('name')?.getError('required')"
+        <small *ngIf="createPatientForm.get('name')?.touched && createPatientForm.get('name')?.getError('required')"
                class="error">
           Este campo é obrigatório.
         </small>
@@ -30,8 +30,9 @@
           placeholder="Sobrenome"
           class="input-primary"
         >
-        <small *ngIf="createWorkspaceForm.get('surname')?.touched && createWorkspaceForm.get('surname')?.getError('required')"
-               class="error">
+        <small
+          *ngIf="createPatientForm.get('surname')?.touched && createPatientForm.get('surname')?.getError('required')"
+          class="error">
           Este campo é obrigatório.
         </small>
       </label>
@@ -46,17 +47,17 @@
         class="input-primary"
       >
       <small
-        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('required')"
+        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('required')"
         class="error">
         Este campo é obrigatório.
       </small>
       <small
-        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('pattern')"
+        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('pattern')"
         class="error">
         Formato inválido. Ex: XX.XXX.XXX-X
       </small>
       <small
-        *ngIf="createWorkspaceForm.get('document')?.touched && createWorkspaceForm.get('document')?.getError('document')"
+        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('document')"
         class="error">
         RG inválido.
       </small>

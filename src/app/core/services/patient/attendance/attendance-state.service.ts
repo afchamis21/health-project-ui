@@ -1,25 +1,25 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
-import {Workspace} from "../../../types/workspace";
-import {WorkspaceStateService} from "../workspace-state.service";
-import {AttendanceWithUsername} from "../../../types/attendance";
-import {WorkspaceAttendanceService} from "./workspace-attendance.service";
+import {PatientStateService} from "../patient-state.service";
+import {AttendanceService} from "./attendance.service";
 import {PaginationData} from "../../../types/http";
 import {UserStateService} from "../../user/user-state.service";
+import {PatientSummary} from "../../../types/patient";
+import {Attendance} from "../../../types/attendance";
 
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceAttendanceStateService {
+export class AttendanceStateService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
   get isLoading$(): Observable<boolean> {
     return this.loadingSubject.asObservable()
   }
 
-  private attendanceSubject = new BehaviorSubject<AttendanceWithUsername[]>([])
+  private attendanceSubject = new BehaviorSubject<Attendance[]>([])
 
-  get attendance$(): Observable<AttendanceWithUsername[]> {
+  get attendance$(): Observable<Attendance[]> {
     return this.attendanceSubject.asObservable();
   }
 
@@ -35,18 +35,18 @@ export class WorkspaceAttendanceStateService {
     return this.paginationData;
   }
 
-  private workspace: Workspace | null = null;
+  private patientSummary: PatientSummary | null = null;
 
-  constructor(workspaceStateService: WorkspaceStateService, private workspaceAttendanceService: WorkspaceAttendanceService,
+  constructor(patientStateService: PatientStateService, private attendanceService: AttendanceService,
               private userStateService: UserStateService) {
-    workspaceStateService.workspace$.subscribe(workspace => {
-      this.workspace = workspace
+    patientStateService.patientSummary$.subscribe(value => {
+      this.patientSummary = value
       this.resetState()
     })
   }
 
   private resetState() {
-    if (this.workspace && this.userStateService.currentUserValue?.userId === this.workspace.ownerId) {
+    if (this.patientSummary && this.userStateService.currentUserValue?.userId === this.patientSummary.ownerId) {
       this.fetchAttendances()
     } else {
       this.attendanceSubject.next([])
@@ -54,14 +54,14 @@ export class WorkspaceAttendanceStateService {
   }
 
   fetchAttendances(memberId: number | null = null) {
-    if (!this.workspace) {
+    if (!this.patientSummary) {
       return
     }
 
     this.loadingSubject.next(true)
 
-    const sub = this.workspaceAttendanceService.getAttendances(
-      this.workspace.workspaceId, this.paginationData, memberId === 0 ? null : memberId
+    const sub = this.attendanceService.getAttendances(
+      this.patientSummary.patientId, this.paginationData, memberId === 0 ? null : memberId
     ).subscribe({
       next: (data) => {
         this.attendanceSubject.next(data.body.data)

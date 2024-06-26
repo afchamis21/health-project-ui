@@ -6,7 +6,7 @@ import {PaginationData} from "../../../types/http";
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceAttendanceService {
+export class AttendanceService {
   constructor(private http: HttpClient) {
   }
 

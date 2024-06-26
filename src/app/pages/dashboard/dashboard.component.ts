@@ -8,27 +8,26 @@ import {MatDialog} from "@angular/material/dialog";
 import {ToastrService} from "ngx-toastr";
 import {User} from "../../core/types/user";
 import {UserService} from "../../core/services/user/user.service";
-import {Workspace} from "../../core/types/workspace";
-import {WorkspaceCardComponent} from "./components/workspace-card/workspace-card.component";
+import {PatientCardComponent} from "./components/patient-card/patient-card.component";
 import {DesktopDashboardMenuComponent} from "./components/desktop-dashboard-menu/desktop-dashboard-menu.component";
 import {MobileDashboardMenuComponent} from "./components/mobile-dashboard-menu/mobile-dashboard-menu.component";
-import {WorkspaceService} from "../../core/services/workspace/workspace.service";
 import {ArrayUtils} from "../../shared/utils/array-utils";
 import {
-  CreateWorkspaceDialogComponent,
-  CreateWorkspaceDialogReturn
-} from "./components/create-workspace-dialog/create-workspace-dialog.component";
+  CreatePatientDialogComponent,
+  CreatePatientDialogReturn
+} from "./components/create-patient-dialog/create-patient-dialog.component";
 import {PaginationData} from "../../core/types/http";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
 import {WorkspaceComponent} from "./components/workspace/workspace.component";
 import {FormControl} from "@angular/forms";
 import {UserStateService} from "../../core/services/user/user-state.service";
+import {PatientSummary} from "../../core/types/patient";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    WorkspaceCardComponent,
+    PatientCardComponent,
     DesktopDashboardMenuComponent,
     MobileDashboardMenuComponent,
     WorkspaceComponent],
@@ -38,8 +37,8 @@ import {UserStateService} from "../../core/services/user/user-state.service";
 export class DashboardComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
   user!: User
-  workspaces: Workspace[] = []
-  filteredWorkspaces: Workspace[] = this.workspaces
+  patients: PatientSummary[] = []
+  filteredPatients: PatientSummary[] = this.patients
 
   isMenuOpen = true
 
@@ -59,8 +58,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private toastr: ToastrService,
     private userService: UserService,
-    private userStateService: UserStateService,
-    private workspaceService: WorkspaceService,
+    private userStateService: UserStateService
   ) {
   }
 
@@ -70,8 +68,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (user && !user.isRegistrationComplete) {
         this.openCompleteRegistrationDialog()
       } else if (user) {
-        const workspacesSubscription = this.fetchWorkspaces()
-        this.subscriptions.push(workspacesSubscription)
+        const patientsSubscription = this.fetchPatients()
+        this.subscriptions.push(patientsSubscription)
       }
     })
 
@@ -83,7 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
     ).subscribe(value => {
       this.menuPaginationData.page = 0
-      this.fetchWorkspaces(value)
+      this.fetchPatients(value)
     })
 
     this.isMenuOpen = localStorage.getItem(this.localStorageIsMenuOpenKey) === 'true'
@@ -94,16 +92,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     SubscriptionUtils.unsubscribe(this.subscriptions)
   }
 
-  fetchWorkspaces(name: string | null = null) {
+  fetchPatients(name: string | null = null) {
     if (name == null) {
       name = this.searchFormControl.value || ''
     }
 
-    return this.userService.searchWorkspaces(name, this.menuPaginationData).subscribe({
+    return this.userService.searchPatients(name, this.menuPaginationData).subscribe({
       next: (value) => {
-        ArrayUtils.clearArray(this.workspaces)
-        value.body.data?.forEach(workspace => {
-          this.workspaces.push(workspace)
+        ArrayUtils.clearArray(this.patients)
+        value.body.data?.forEach(patient => {
+          this.patients.push(patient)
         })
         this.menuPaginationData.lastPage = value.body.lastPage
       }
@@ -127,15 +125,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     localStorage.setItem(this.localStorageIsMenuOpenKey, String(this.isMenuOpen))
   }
 
-  createWorkspace() {
-    const dialogRef = this.dialog.open(CreateWorkspaceDialogComponent)
+  createPatient() {
+    const dialogRef = this.dialog.open(CreatePatientDialogComponent)
 
-    dialogRef.afterClosed().subscribe((value: CreateWorkspaceDialogReturn) => {
+    dialogRef.afterClosed().subscribe((value: CreatePatientDialogReturn) => {
       if (value.complete) {
-        this.workspaceService.createWorkspace({name: value.value.name}).subscribe({
+        this.userService.createPatient(value.value).subscribe({
           next: () => {
             this.toastr.info(`Paciente ${value.value.name} cadastrado com sucesso!`)
-            this.fetchWorkspaces()
+            this.fetchPatients()
           }
         })
       }
@@ -144,16 +142,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   fetchNextPage() {
     this.menuPaginationData.page += 1
-    this.fetchWorkspaces()
+    this.fetchPatients()
   }
 
   fetchPreviousPage() {
     this.menuPaginationData.page -= 1
-    this.fetchWorkspaces()
+    this.fetchPatients()
   }
 
   fetchSpecificPage(page: number) {
     this.menuPaginationData.page = page
-    this.fetchWorkspaces()
+    this.fetchPatients()
   }
 }

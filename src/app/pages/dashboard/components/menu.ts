@@ -1,15 +1,15 @@
 import {User} from "../../../core/types/user";
-import {Workspace} from "../../../core/types/workspace";
 import {EventEmitter} from "@angular/core";
+import {PatientSummary} from "../../../core/types/patient";
 
 export interface Menu {
   user: User | null;
-  workspaces: Workspace[];
+  patientSummaries: PatientSummary[];
   isMenuOpen: boolean;
-  onCreateWorkspace: EventEmitter<void>;
+  onCreatePatient: EventEmitter<void>;
   onToggleMenu: EventEmitter<void>;
 
-  createWorkspace(): void;
+  createPatient(): void;
 
   toggleMenu(): void;
 }

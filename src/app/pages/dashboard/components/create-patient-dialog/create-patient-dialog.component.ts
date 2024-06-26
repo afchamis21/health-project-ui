@@ -3,35 +3,35 @@ import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
-import {CreateWorkspaceRequest} from "../../../../core/types/workspace";
 import {rgDocumentValidator} from "../../../../core/validators/form-validators";
+import {CreatePatientRequest} from "../../../../core/types/patient";
 
-export type CreateWorkspaceDialogReturn = {
+export type CreatePatientDialogReturn = {
   complete: false
 } | {
   complete: true
-  value: CreateWorkspaceRequest
+  value: CreatePatientRequest
 }
 
 @Component({
-  selector: 'app-create-workspace-dialog',
+  selector: 'app-create-patient-dialog',
   standalone: true,
   imports: [
     ReactiveFormsModule,
     NgIf,
     MatIconModule
   ],
-  templateUrl: './create-workspace-dialog.component.html',
-  styleUrl: './create-workspace-dialog.component.css'
+  templateUrl: './create-patient-dialog.component.html',
+  styleUrl: './create-patient-dialog.component.css'
 })
-export class CreateWorkspaceDialogComponent {
-  constructor(public dialogRef: MatDialogRef<CreateWorkspaceDialogComponent, CreateWorkspaceDialogReturn>) {
+export class CreatePatientDialogComponent {
+  constructor(public dialogRef: MatDialogRef<CreatePatientDialogComponent, CreatePatientDialogReturn>) {
   }
 
-  telefoneRegex = /^(\([1-9]{2}\) 9?[0-9]{4}\-[0-9]{4}|\([1-9]{2}\) [2-9][0-9]{3,4}\-[0-9]{4})$/;
+  telefoneRegex = /^(\([1-9]{2}\) 9?[0-9]{4}-[0-9]{4}|\([1-9]{2}\) [2-9][0-9]{3,4}-[0-9]{4})$/;
   rgRegex = /^(\d{2}\.\d{3}\.\d{3}-[0-9Xx]|\d{8}[0-9Xx])$/;
 
-  createWorkspaceForm = new FormGroup({
+  createPatientForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     surname: new FormControl('', [Validators.required]),
     document: new FormControl('', [Validators.required, Validators.pattern(this.rgRegex)]),
@@ -49,15 +49,15 @@ export class CreateWorkspaceDialogComponent {
   }
 
   submitForm() {
-    if (!this.createWorkspaceForm.valid) {
-      this.createWorkspaceForm.markAllAsTouched()
+    if (!this.createPatientForm.valid) {
+      this.createPatientForm.markAllAsTouched()
       return
     }
 
 
     this.dialogRef.close({
       complete: true,
-      value: this.createWorkspaceForm.value as unknown as CreateWorkspaceRequest
+      value: this.createPatientForm.value as unknown as CreatePatientRequest
     })
   }
 }

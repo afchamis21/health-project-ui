@@ -7,7 +7,7 @@ import {environment} from "../../../../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class WorkspaceMemberService {
+export class CollaboratorService {
   private baseUrl = environment.apiURL + "/patient/collaborators"
 
   constructor(private http: HttpClient) {

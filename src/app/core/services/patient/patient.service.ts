@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
-import {DeletePatientResponse, GetPatientResponse, UpdatePatientRequest} from "../../types/patient";
+import {GetPatientResponse, GetPatientSummaryResponse, UpdatePatientRequest} from "../../types/patient";
+import {VoidResponse} from "../../types/http";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class PatientService {
   }
 
   deletePatient(patientId: number) {
-    return this.http.delete<DeletePatientResponse>(`${this.baseUrl}/delete`, {
+    return this.http.delete<VoidResponse>(`${this.baseUrl}`, {
       params: {
         patientId
       }
@@ -21,7 +22,7 @@ export class PatientService {
   } // Na tab gerenciar
 
   deactivatePatient(patientId: number) {
-    return this.http.patch<DeletePatientResponse>(`${this.baseUrl}/deactivate`, {}, {
+    return this.http.patch<VoidResponse>(`${this.baseUrl}/deactivate`, {}, {
       params: {
         patientId
       }
@@ -29,7 +30,7 @@ export class PatientService {
   } // Na tab gerenciar
 
   activatePatient(patientId: number) {
-    return this.http.patch<DeletePatientResponse>(`${this.baseUrl}/activate`, {}, {
+    return this.http.patch<VoidResponse>(`${this.baseUrl}/activate`, {}, {
       params: {
         patientId
       }
@@ -37,7 +38,7 @@ export class PatientService {
   } // Na tab gerenciar
 
   updatePatient(patientId: number, data: UpdatePatientRequest) {
-    return this.http.put<DeletePatientResponse>(`${this.baseUrl}/update`, data, {
+    return this.http.put<GetPatientSummaryResponse>(`${this.baseUrl}`, data, {
       params: {
         patientId
       }
@@ -46,6 +47,14 @@ export class PatientService {
 
   fetchPatient(patientId: number) {
     return this.http.get<GetPatientResponse>(`${this.baseUrl}`, {
+      params: {
+        patientId
+      }
+    })
+  }  // Na tab gerenciar
+
+  fetchPatientSummary(patientId: number) { // TODO develop this o backend
+    return this.http.get<GetPatientSummaryResponse>(`${this.baseUrl}/summary`, {
       params: {
         patientId
       }

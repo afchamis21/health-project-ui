@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {Workspace} from "../../../../../../core/types/workspace";
-import {WorkspaceMember} from "../../../../../../core/types/workspace-member";
+import {Collaborator} from "../../../../../../core/types/collaborator";
 import {User} from "../../../../../../core/types/user";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../../../shared/utils/subscription-utils";
@@ -13,11 +12,10 @@ import {AddMemberDialogComponent, AddMemberDialogReturn} from "./add-member-dial
 import {ToastrService} from "ngx-toastr";
 import {SpinnerComponent} from "../../../../../../shared/components/loader/spinner/spinner.component";
 import {PageControllerComponent} from "../../../../../../shared/components/page-controller/page-controller.component";
-import {
-  WorkspaceMemberStateService
-} from "../../../../../../core/services/workspace/member/workspace-member-state.service";
-import {WorkspaceMemberService} from "../../../../../../core/services/workspace/member/workspace-member.service";
+import {CollaboratorStateService} from "../../../../../../core/services/patient/member/collaborator-state.service";
+import {CollaboratorService} from "../../../../../../core/services/patient/member/collaborator.service";
 import {UserStateService} from "../../../../../../core/services/user/user-state.service";
+import {PatientSummary} from "../../../../../../core/types/patient";
 
 @Component({
   selector: 'app-members-tab',
@@ -34,8 +32,8 @@ import {UserStateService} from "../../../../../../core/services/user/user-state.
   styleUrl: './members-tab.component.css'
 })
 export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() workspace!: Workspace
-  members: WorkspaceMember[] = []
+  @Input() patientSummary!: PatientSummary
+  members: Collaborator[] = []
 
 
   user: User | null = null
@@ -49,24 +47,24 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   isLoadingMembers = false;
 
   constructor(
-    private workspaceMemberService: WorkspaceMemberService,
+    private collaboratorService: CollaboratorService,
     private userService: UserService,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    private workspaceMemberStateService: WorkspaceMemberStateService,
+    private collaboratorStateService: CollaboratorStateService,
     private userStateService: UserStateService
   ) {
-    this.paginationData = this.workspaceMemberStateService.getPaginationData()
+    this.paginationData = this.collaboratorStateService.getPaginationData()
   }
 
   ngOnInit(): void {
-    const memberSubscription = this.workspaceMemberStateService.members$.subscribe({
+    const memberSubscription = this.collaboratorStateService.members$.subscribe({
       next: data => {
         this.members = data
       }
     })
 
-    const isLoadingSubscription = this.workspaceMemberStateService.isLoading$.subscribe({
+    const isLoadingSubscription = this.collaboratorStateService.isLoading$.subscribe({
       next: (data) => {
         this.isLoadingMembers = data
       }
@@ -74,7 +72,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
     const userSubscription = this.userStateService.user$.subscribe(value => {
       this.user = value
-      this.isOwner = value?.userId === this.workspace.ownerId
+      this.isOwner = value?.userId === this.patientSummary.ownerId
     })
 
 
@@ -91,17 +89,18 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  addMemberToWorkspace() {
+  addCollaboratorToPatient() {
     const dialogRef = this.dialog.open(AddMemberDialogComponent)
 
     dialogRef.afterClosed().subscribe((value: AddMemberDialogReturn) => {
       if (value.complete) {
-        this.workspaceMemberService.addMember(this.workspace.workspaceId, {
-          email: value.value.email
+        this.userService.addCollaboratorToPatient({
+          email: value.value.email,
+          patientId: this.patientSummary.patientId
         }).subscribe({
           next: (data) => {
-            this.workspaceMemberStateService.fetchMembers()
-            this.workspaceMemberStateService.addMemberName({
+            this.collaboratorStateService.fetchMembers()
+            this.collaboratorStateService.addMemberName({
               userId: data.body.user.userId,
               username: data.body.user.username
             })
@@ -114,9 +113,9 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   deactivateMember(memberId: number) {
-    this.workspaceMemberService.deactivateMember(this.workspace.workspaceId, memberId).subscribe({
+    this.collaboratorService.deactivateMember(this.patientSummary.patientId, memberId).subscribe({
       next: () => {
-        this.workspaceMemberStateService.members$ = this.members.map(member => {
+        this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isMemberActive = false
             this.toastr.info("Colaborador desativado com sucesso!")
@@ -129,9 +128,9 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   activateMember(memberId: number) {
-    this.workspaceMemberService.activateMember(this.workspace.workspaceId, memberId).subscribe({
+    this.collaboratorService.activateMember(this.patientSummary.patientId, memberId).subscribe({
       next: () => {
-        this.workspaceMemberStateService.members$ = this.members.map(member => {
+        this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isMemberActive = true
             this.toastr.info("Colaborador ativado com sucesso!")
@@ -154,6 +153,6 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   handleSpecificPage(page: number) {
     this.paginationData.page = page
 
-    this.workspaceMemberStateService.fetchMembers()
+    this.collaboratorStateService.fetchMembers()
   }
 }

@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Tab, tabs} from "../../../../core/types/tab";
 import {User} from "../../../../core/types/user";
-import {Workspace} from "../../../../core/types/workspace";
 import {NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from "@angular/common";
-import {WorkspaceStateService} from "../../../../core/services/workspace/workspace-state.service";
+import {PatientStateService} from "../../../../core/services/patient/patient-state.service";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../../../shared/utils/subscription-utils";
 import {TabsComponent} from "./tabs/tabs.component";
 import {MembersTabComponent} from "./tabs/members-tab/members-tab.component";
 import {AttendanceTabComponent} from "./tabs/attendance-tab/attendance-tab.component";
 import {UserStateService} from "../../../../core/services/user/user-state.service";
+import {PatientSummary} from "../../../../core/types/patient";
 
 @Component({
   selector: 'app-workspace',
@@ -29,7 +29,7 @@ import {UserStateService} from "../../../../core/services/user/user-state.servic
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
   user: User | null = null;
-  workspace: Workspace | null = null;
+  patientSummary: PatientSummary | null = null;
 
   initialTab: Tab = tabs.members;
 
@@ -38,24 +38,24 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
   isClockedIn: boolean = false;
 
-  constructor(private workspaceStateService: WorkspaceStateService,
+  constructor(private patientStateService: PatientStateService,
               private userStateService: UserStateService
   ) {
   }
 
   ngOnInit(): void {
-    const userSubscription = this.userStateService.user$.subscribe(user => {
+    const user$ = this.userStateService.user$.subscribe(user => {
       this.user = user
       this.getIsClockedIn()
     })
 
-    const workspaceSubscription = this.workspaceStateService.workspace$.subscribe(workspace => {
-      this.workspace = workspace
+    const patient$ = this.patientStateService.patientSummary$.subscribe(value => {
+      this.patientSummary = value
       this.selectedTab = null
       this.getIsClockedIn()
     })
 
-    this.subscriptions.push(workspaceSubscription, userSubscription)
+    this.subscriptions.push(user$, patient$)
   }
 
   ngOnDestroy(): void {
@@ -63,16 +63,16 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   getIsClockedIn() {
-    this.isClockedIn = this.user?.userId === this.workspace?.ownerId
-      || !!(this.user?.isClockedIn && this.user.clockedInAt === this.workspace?.workspaceId)
+    this.isClockedIn = this.user?.userId === this.patientSummary?.ownerId
+      || !!(this.user?.isClockedIn && this.user.clockedInAt === this.patientSummary?.patientId)
   }
 
-  async clockIn(workspaceId: number) {
+  async clockIn(patientId: number) {
     if (this.user?.isClockedIn) {
       await this.userStateService.handleClockOut()
     }
 
-    this.userStateService.handleClockIn({workspaceId})
+    this.userStateService.handleClockIn(patientId)
   }
 
   selectTab(tab: Tab | null) {

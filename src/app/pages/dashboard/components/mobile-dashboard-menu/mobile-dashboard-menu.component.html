@@ -27,7 +27,7 @@
 
   <button
     *ngIf="user?.isPaymentActive"
-    (click)="createWorkspace()"
+    (click)="createPatient()"
     class="
       flex items-center gap-2 justify-center bg-slate-200 w-full rounded p-4 leading-none transition-colors
       hover:bg-blue-950 hover:text-slate-50
@@ -37,17 +37,17 @@
     <span>Adicionar paciente</span>
   </button>
 
-  <ul class="flex flex-col gap-4 overflow-auto flex-1 workspace-list">
-    <li *ngFor="let workspace of workspaces">
-      <app-workspace-card
-        [workspace]="workspace"
+  <ul class="flex flex-col gap-4 overflow-auto flex-1 patient-summary-list">
+    <li *ngFor="let patient of patientSummaries">
+      <app-patient-card
+        [patientSummary]="patient"
         [isOpen]="isMenuOpen"
-      ></app-workspace-card>
+      ></app-patient-card>
     </li>
   </ul>
 
   <app-page-controller
-  *ngIf="workspaces?.length !== 0"
+    *ngIf="patientSummaries?.length !== 0"
     [currentPage]="paginationData.page"
     [lastPage]="paginationData.lastPage"
     [controllerSize]="paginationData.maxPages" (onNextPage)="onNextPage.emit()"

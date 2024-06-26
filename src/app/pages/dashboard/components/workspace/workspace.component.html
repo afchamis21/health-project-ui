@@ -1,15 +1,15 @@
-<div *ngIf="!workspace" class="h-full flex-1 flex items-center justify-center bg-transparent">
+<div *ngIf="!patientSummary" class="h-full flex-1 flex items-center justify-center bg-transparent">
   <div class="p-4 rounded-md border-2 border-yellow-700 pointer-events-none select-none">
     Selecione um paciente para visualizar suas informações.
   </div>
 </div>
-<div *ngIf="workspace" class="h-full flex-1 flex flex-col">
+<div *ngIf="patientSummary" class="h-full flex-1 flex flex-col">
   <div *ngIf="!isClockedIn" class="flex-1 flex items-center justify-center">
     <div class="p-4 rounded-md border-2 border-yellow-700 flex flex-col gap-8">
       Para começar a trabalhar bata o ponto.
       <button
         class="bg-yellow-700 p-2 text-slate-50 hover:bg-yellow-800 transition-colors"
-        (click)="clockIn(workspace.workspaceId)"
+        (click)="clockIn(patientSummary.patientId)"
       >
         Bater ponto
       </button>
@@ -23,7 +23,7 @@
     <div [ngSwitch]="selectedTab?.name" class="flex-1 w-full p-4  flex flex-col items-center justify-center">
       <div *ngSwitchCase="'members'" class="tab">
         <app-members-tab
-          [workspace]="workspace"
+          [patientSummary]="patientSummary"
         ></app-members-tab>
       </div>
       <div *ngSwitchCase="'manage'">Tab manage</div>

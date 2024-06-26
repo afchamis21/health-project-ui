@@ -15,3 +15,5 @@ export type PaginationData = {
   maxPages: 5,
   sort: 'ASC' | 'DESC'
 }
+
+export type VoidResponse = BaseResponse<null>

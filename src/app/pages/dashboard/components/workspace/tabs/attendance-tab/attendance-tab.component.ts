@@ -1,21 +1,17 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {WorkspaceMemberName} from "../../../../../../core/types/workspace-member";
+import {PatientCollaboratorName} from "../../../../../../core/types/collaborator";
 import {MatIconModule} from "@angular/material/icon";
 import {NgForOf, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
-import {
-  WorkspaceMemberStateService
-} from "../../../../../../core/services/workspace/member/workspace-member-state.service";
+import {CollaboratorStateService} from "../../../../../../core/services/patient/member/collaborator-state.service";
 import {FormsModule} from "@angular/forms";
 import {SubscriptionUtils} from "../../../../../../shared/utils/subscription-utils";
-import {
-  WorkspaceAttendanceStateService
-} from "../../../../../../core/services/workspace/attendance/workspace-attendance-state.service";
-import {AttendanceWithUsername} from "../../../../../../core/types/attendance";
+import {AttendanceStateService} from "../../../../../../core/services/patient/attendance/attendance-state.service";
 import {DateUtils} from "../../../../../../shared/utils/date-utils";
 import {SpinnerComponent} from "../../../../../../shared/components/loader/spinner/spinner.component";
 import {PaginationData} from "../../../../../../core/types/http";
 import {PageControllerComponent} from "../../../../../../shared/components/page-controller/page-controller.component";
+import {Attendance} from "../../../../../../core/types/attendance";
 
 @Component({
   selector: 'app-attendance-tab',
@@ -32,8 +28,8 @@ import {PageControllerComponent} from "../../../../../../shared/components/page-
   styleUrl: './attendance-tab.component.css'
 })
 export class AttendanceTabComponent implements OnInit, OnDestroy {
-  members: WorkspaceMemberName[] = [];
-  attendances: AttendanceWithUsername[] = [];
+  members: PatientCollaboratorName[] = [];
+  attendances: Attendance[] = [];
 
   subscriptions: Subscription[] = [];
 
@@ -42,24 +38,24 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
 
   paginationData: PaginationData;
 
-  constructor(private workspaceMemberStateService: WorkspaceMemberStateService, private workspaceAttendanceStateService: WorkspaceAttendanceStateService) {
-    this.paginationData = this.workspaceAttendanceStateService.getPaginationData()
+  constructor(private collaboratorStateService: CollaboratorStateService, private attendanceStateService: AttendanceStateService) {
+    this.paginationData = this.attendanceStateService.getPaginationData()
   }
 
   ngOnInit(): void {
-    const memberSubscription = this.workspaceMemberStateService.memberNames$.subscribe({
+    const memberSubscription = this.collaboratorStateService.memberNames$.subscribe({
       next: data => {
         this.members = data
       }
     })
 
-    const attendancesSubscription = this.workspaceAttendanceStateService.attendance$.subscribe({
+    const attendancesSubscription = this.attendanceStateService.attendance$.subscribe({
       next: data => {
         this.attendances = data
       }
     })
 
-    const loadingAttendancesSubscription = this.workspaceAttendanceStateService.isLoading$.subscribe(data => {
+    const loadingAttendancesSubscription = this.attendanceStateService.isLoading$.subscribe(data => {
       this.isLoadingAttendances = data
     })
 
@@ -71,7 +67,7 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
   }
 
   handleFilterAttendances() {
-    this.workspaceAttendanceStateService.fetchAttendances(this.selectedMemberId)
+    this.attendanceStateService.fetchAttendances(this.selectedMemberId)
     this.selectedMemberId = 0
   }
 
@@ -90,6 +86,6 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
   handleSpecificPage(page: number) {
     this.paginationData.page = page;
 
-    this.workspaceAttendanceStateService.fetchAttendances(this.selectedMemberId)
+    this.attendanceStateService.fetchAttendances(this.selectedMemberId)
   }
 }
