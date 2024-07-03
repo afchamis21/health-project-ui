@@ -10,6 +10,12 @@ export type User = {
   clockedInAt?: number
 }
 
+export type UserSummary = {
+  userId: number
+  username: string
+  email: string
+}
+
 export type GetUserResponse = BaseResponse<User>
 
 export type CompleteRegistrationRequest = {

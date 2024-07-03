@@ -59,8 +59,25 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     const memberSubscription = this.collaboratorStateService.members$.subscribe({
-      next: data => {
-        this.members = data
+      next: (data: Collaborator[]) => {
+        this.members = data.sort((a, b) => {
+          if (b.user.userId === this.patientSummary.ownerId) {
+            return 1;
+          }
+
+          if (a.user.userId === this.patientSummary.ownerId) {
+            return -1;
+          }
+
+          if (b.isCollaboratorActive) {
+            if (a.isCollaboratorActive) {
+              return 0
+            }
+            return 1
+          }
+
+          return -1
+        })
       }
     })
 
@@ -117,7 +134,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
       next: () => {
         this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
-            member.isMemberActive = false
+            member.isCollaboratorActive = false
             this.toastr.info("Colaborador desativado com sucesso!")
           }
 
@@ -132,7 +149,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
       next: () => {
         this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
-            member.isMemberActive = true
+            member.isCollaboratorActive = true
             this.toastr.info("Colaborador ativado com sucesso!")
           }
 

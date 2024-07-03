@@ -1,11 +1,11 @@
-import {User} from "./user";
+import {User, UserSummary} from "./user";
 import {BaseResponse, PaginatedResponse} from "./http";
 
 export type Collaborator = {
   patientId: number
-  isMemberActive: boolean
+  isCollaboratorActive: boolean
   createDt: Date
-  user: User
+  user: UserSummary
 }
 
 export type PatientCollaboratorName = Pick<User, "userId" | "username">

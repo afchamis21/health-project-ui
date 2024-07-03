@@ -38,6 +38,23 @@ body {
   }
 }
 
+.input-primary-date {
+  @apply border-2 border-gray-900 rounded px-2 py-[0.4375rem] transition-colors;
+
+  &:not(:disabled):hover, &:focus {
+    @apply border-blue-800 outline-0
+  }
+}
+
+
+.input-primary-select {
+  @apply border-2 border-gray-900 rounded px-2 py-[0.59375rem] transition-colors;
+
+  &:not(:disabled):hover, &:focus {
+    @apply border-blue-800 outline-0
+  }
+}
+
 .error {
   @apply text-sm text-red-500 pl-2
 }

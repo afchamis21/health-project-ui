@@ -53,7 +53,7 @@ export class PatientService {
     })
   }  // Na tab gerenciar
 
-  fetchPatientSummary(patientId: number) { // TODO develop this o backend
+  fetchPatientSummary(patientId: number) {
     return this.http.get<GetPatientSummaryResponse>(`${this.baseUrl}/summary`, {
       params: {
         patientId

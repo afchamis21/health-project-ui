@@ -102,11 +102,23 @@
   <section class="w-full md:flex-1 md:min-w-60">
     <button (click)="goToBillingPortal()"
             [disabled]="isGoingToBillingPortal"
-            class="btn-primary large"
-            *ngIf="user.isPaymentActive">
-            <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
-              <mat-icon>settings</mat-icon> Gerencie sua assinatura
-            </span>
+            class="btn-primary large w-full flex justify-center"
+            *ngIf="user.isPaymentActive"
+    >
+      <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
+        <mat-icon>settings</mat-icon> Gerencie sua assinatura
+      </span>
+      <loader-spinner *ngIf="isGoingToBillingPortal" color="neutral" size="M"></loader-spinner>
+    </button>
+    <button
+      (click)="goToCheckout()"
+      [disabled]="isGoingToBillingPortal"
+      *ngIf="!user.isPaymentActive"
+      class="btn-primary large w-full flex justify-center"
+    >
+      <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
+        <mat-icon>shopping_bag</mat-icon> Faça um upgrade!
+      </span>
       <loader-spinner *ngIf="isGoingToBillingPortal" color="neutral" size="M"></loader-spinner>
     </button>
   </section>

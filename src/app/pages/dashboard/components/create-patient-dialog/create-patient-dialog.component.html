@@ -1,4 +1,4 @@
-<section class="py-8 px-12 bg-slate-50 flex flex-col gap-4 items-center relative">
+<section class="pt-8 px-12 bg-slate-50 flex flex-col gap-4 items-center relative max-h-[70vh]">
   <button (click)="close()"
           class="outline-0 absolute top-2 right-2 leading-none text-sm hover:text-red-500 transition-colors">
     <mat-icon>close</mat-icon>
@@ -37,31 +37,113 @@
         </small>
       </label>
     </div>
-    <label for="name" class="flex gap-2 flex-col">
-      <span class="text-sm">Documento</span>
+    <div class="flex gap-2 flex-wrap">
+      <label for="gender" class="flex flex-1 gap-2 flex-col">
+        <span class="text-sm">Sexo</span>
+        <select
+          formControlName="gender"
+          id="gender"
+          name="gender"
+          class="input-primary-select"
+        >
+          <option [value]="null" disabled>O sexo do paciente</option>
+          <option value="MALE">Masculino</option>
+          <option value="FEMALE">Feminino</option>
+          <option value="NOT_SPECIFIED">Prefiro não informar</option>
+        </select>
+        <small *ngIf="createPatientForm.get('gender')?.touched && createPatientForm.get('gender')?.getError('required')"
+               class="error">
+          Este campo é obrigatório.
+        </small>
+      </label>
+      <label for="dateOfBirth" class="flex flex-1 gap-2 flex-col">
+        <span class="text-sm">Data de nascimento</span>
+        <input
+          formControlName="dateOfBirth"
+          id="dateOfBirth"
+          name="dateOfBirth"
+          class="input-primary-date"
+          type="date"
+        >
+        <small
+          *ngIf="createPatientForm.get('dateOfBirth')?.touched && createPatientForm.get('dateOfBirth')?.getError('required')"
+          class="error">
+          Este campo é obrigatório.
+        </small>
+      </label>
+    </div>
+    <label for="rg" class="flex gap-2 flex-col">
+      <span class="text-sm">RG</span>
       <input
-        formControlName="document"
-        id="document"
-        name="document"
+        formControlName="rg"
+        id="rg"
+        name="rg"
         placeholder="O RG do paciente"
         class="input-primary"
       >
       <small
-        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('required')"
+        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('required')"
         class="error">
         Este campo é obrigatório.
       </small>
       <small
-        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('pattern')"
+        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('pattern')"
         class="error">
         Formato inválido. Ex: XX.XXX.XXX-X
       </small>
       <small
-        *ngIf="createPatientForm.get('document')?.touched && createPatientForm.get('document')?.getError('document')"
+        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('rg')"
         class="error">
         RG inválido.
       </small>
     </label>
-    <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800">Adicionar</button>
+    <label for="cpf" class="flex gap-2 flex-col">
+      <span class="text-sm">CPF</span>
+      <input
+        formControlName="cpf"
+        id="cpf"
+        name="rg"
+        placeholder="O CPF do paciente"
+        class="input-primary"
+      >
+      <small
+        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('required')"
+        class="error">
+        Este campo é obrigatório.
+      </small>
+      <small
+        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('pattern')"
+        class="error">
+        Formato inválido. Ex: XXX.XXX.XXX-XX
+      </small>
+      <small
+        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('cpf')"
+        class="error">
+        CPF inválido.
+      </small>
+    </label>
+    <label for="contactPhone" class="flex gap-2 flex-col">
+      <span class="text-sm">Telefone</span>
+      <input
+        formControlName="contactPhone"
+        id="contactPhone"
+        name="contactPhone"
+        placeholder="O telefone do paciente"
+        class="input-primary"
+        (input)="handleFormatPhone($event)"
+      >
+      <small
+        *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('required')"
+        class="error">
+        Este campo é obrigatório.
+      </small>
+      <small
+        *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('pattern')"
+        class="error">
+        Formato inválido. Ex: (11) 91234-5678
+      </small>
+    </label>
+    <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800 mb-8">Adicionar
+    </button>
   </form>
 </section>

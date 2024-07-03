@@ -97,4 +97,11 @@ export class ProfileComponent {
     this.isGoingToBillingPortal = true
     this.paymentService.goToBillingPortal()
   }
+
+  goToCheckout() {
+    this.isGoingToBillingPortal = true
+    this.paymentService.goToCheckout(this.user.email)
+  }
+
+  // TODO tornar email editável
 }

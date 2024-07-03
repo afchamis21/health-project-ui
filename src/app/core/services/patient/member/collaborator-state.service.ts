@@ -68,7 +68,6 @@ export class CollaboratorStateService {
 
       const user = this.userStateService.currentUserValue
       if (user && user.userId === this.patientSummary.ownerId) {
-        console.log("Entrou aqui")
         this.fetchAllMemberUsernames()
       }
     } else {
@@ -100,10 +99,8 @@ export class CollaboratorStateService {
     if (!this.patientSummary) {
       return
     }
-    console.log("Buscando nomes")
     const sub = this.collaboratorService.getMembersNames(this.patientSummary.patientId).subscribe({
       next: (data) => {
-        console.log("Resultado", data.body)
         this.memberNamesSubject.next(data.body)
         sub.unsubscribe()
       }

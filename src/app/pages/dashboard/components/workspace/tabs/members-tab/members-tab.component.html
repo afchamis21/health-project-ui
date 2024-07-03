@@ -14,12 +14,13 @@
 
 <ul class="divide-y divide-slate-300 mt-8 flex-1" *ngIf="!isLoadingMembers">
   <li *ngFor="let member of members" class="py-2 flex justify-between items-baseline gap-6 flex-wrap">
-    <span>{{ member.user.username }}</span>
+    <span>{{ member.user.username }} <span *ngIf="member.user.userId !== patientSummary.ownerId"
+                                           class="text-xs text-slate-400">({{ member.user.email }})</span></span>
     <div class="flex flex-col-reverse items-end md:flex-row md:gap-6">
       <div *ngIf="isOwner && member.user.userId !== patientSummary.ownerId">
         <button
           class="action-button hover:text-green-700 transition-colors"
-          *ngIf="!member.isMemberActive"
+          *ngIf="!member.isCollaboratorActive"
           (click)="activateMember(member.user.userId)"
         >
           <mat-icon [inline]="true">check</mat-icon>
@@ -27,7 +28,7 @@
         </button>
         <button
           class="action-button hover:text-red-700 transition-colors"
-          *ngIf="member.isMemberActive"
+          *ngIf="member.isCollaboratorActive"
           (click)="deactivateMember(member.user.userId)"
         >
           <mat-icon [inline]="true">block</mat-icon>
@@ -38,11 +39,11 @@
         *ngIf="member.user.userId === patientSummary.ownerId"
         class="tag bg-slate-800 text-slate-100">Dono</span>
       <span
-        *ngIf="member.user.userId !== patientSummary.ownerId && member.isMemberActive"
+        *ngIf="member.user.userId !== patientSummary.ownerId && member.isCollaboratorActive"
         class="tag bg-green-700 text-slate-50">Ativo
       </span>
       <span
-        *ngIf="member.user.userId !== patientSummary.ownerId && !member.isMemberActive"
+        *ngIf="member.user.userId !== patientSummary.ownerId && !member.isCollaboratorActive"
         class="tag bg-red-700 text-slate-50">Inativo
       </span>
     </div>

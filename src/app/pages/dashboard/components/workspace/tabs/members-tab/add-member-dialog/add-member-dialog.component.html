@@ -4,29 +4,28 @@
     <mat-icon>close</mat-icon>
   </button>
   <h2 class="text-2xl font-bold text-center">Adicionar Colaborador</h2>
-  <p class="text-center text-sm">
+  <p class="text-center text-sm max-w-md">
     Caso o colaborador ainda não tenha uma conta, uma nova será criada e instruções de acesso serão
     enviadas para o email informado
   </p>
-  <form class="flex flex-col gap-4" [formGroup]="addMemberForm" (submit)="submitForm()">
-    <label for="email" class="flex gap-2">Email:
-      <div class="flex flex-col">
-        <input
-          formControlName="email"
-          id="email"
-          name="email"
-          placeholder="Email do colaborador"
-          class="px-2 bg-transparent border-b-2 border-slate-400 focus:outline-0 focus:border-blue-950 hover:border-blue-950"
-        >
-        <small *ngIf="addMemberForm.get('email')?.touched && addMemberForm.get('email')?.getError('required')"
-               class="error">
-          Este campo é obrigatório.
-        </small>
-        <small *ngIf="addMemberForm.get('email')?.touched && addMemberForm.get('email')?.getError('email')"
-               class="error">
-          Insira um email válido.
-        </small>
-      </div>
+  <form class="flex flex-col gap-4 w-full" [formGroup]="addMemberForm" (submit)="submitForm()">
+    <label for="email" class="flex flex-col">
+      <span class="text-sm">Email</span>
+      <input
+        formControlName="email"
+        id="email"
+        name="email"
+        placeholder="Email do colaborador"
+        class="input-primary"
+      >
+      <small *ngIf="addMemberForm.get('email')?.touched && addMemberForm.get('email')?.getError('required')"
+             class="error">
+        Este campo é obrigatório.
+      </small>
+      <small *ngIf="addMemberForm.get('email')?.touched && addMemberForm.get('email')?.getError('email')"
+             class="error">
+        Insira um email válido.
+      </small>
     </label>
     <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800">Adicionar</button>
   </form>
