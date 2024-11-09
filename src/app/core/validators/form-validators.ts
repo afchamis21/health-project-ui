@@ -18,6 +18,10 @@ export function passwordValidator(control: AbstractControl) {
   const passControl = control.get('password');
 
   const password: string = passControl?.value
+  
+  if (password?.length === 0) {
+    return null
+  }
 
   const hasUpperCaseLetter = password.split('')
     .filter(letter => letter === letter.toUpperCase())

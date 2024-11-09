@@ -10,12 +10,12 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatDialog} from "@angular/material/dialog";
 import {AddMemberDialogComponent, AddMemberDialogReturn} from "./add-member-dialog/add-member-dialog.component";
 import {ToastrService} from "ngx-toastr";
-import {SpinnerComponent} from "../../../../../../shared/components/loader/spinner/spinner.component";
 import {PageControllerComponent} from "../../../../../../shared/components/page-controller/page-controller.component";
 import {CollaboratorStateService} from "../../../../../../core/services/patient/member/collaborator-state.service";
 import {CollaboratorService} from "../../../../../../core/services/patient/member/collaborator.service";
 import {UserStateService} from "../../../../../../core/services/user/user-state.service";
 import {PatientSummary} from "../../../../../../core/types/patient";
+import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-members-tab',
@@ -24,9 +24,9 @@ import {PatientSummary} from "../../../../../../core/types/patient";
     NgForOf,
     NgIf,
     MatIconModule,
-    SpinnerComponent,
     NgClass,
-    PageControllerComponent
+    PageControllerComponent,
+    NgxSpinnerComponent
   ],
   templateUrl: './members-tab.component.html',
   styleUrl: './members-tab.component.css'
@@ -52,7 +52,8 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     private dialog: MatDialog,
     private toastr: ToastrService,
     private collaboratorStateService: CollaboratorStateService,
-    private userStateService: UserStateService
+    private userStateService: UserStateService,
+    private spinner: NgxSpinnerService
   ) {
     this.paginationData = this.collaboratorStateService.getPaginationData()
   }
@@ -84,6 +85,11 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     const isLoadingSubscription = this.collaboratorStateService.isLoading$.subscribe({
       next: (data) => {
         this.isLoadingMembers = data
+        if (data) {
+          this.spinner.show()
+        } else {
+          this.spinner.hide()
+        }
       }
     })
 
@@ -97,7 +103,10 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    this.spinner.hide()
     SubscriptionUtils.unsubscribe(this.subscriptions)
+
+    this.collaboratorStateService.setLoading(false)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -111,6 +120,7 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
     dialogRef.afterClosed().subscribe((value: AddMemberDialogReturn) => {
       if (value.complete) {
+        this.collaboratorStateService.setLoading(true)
         this.userService.addCollaboratorToPatient({
           email: value.value.email,
           patientId: this.patientSummary.patientId
@@ -123,6 +133,9 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
             })
 
             this.toastr.success("Colaborador adicionado com sucesso!")
+          },
+          error: () => {
+            this.collaboratorStateService.setLoading(false)
           }
         })
       }
@@ -130,8 +143,10 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   deactivateMember(memberId: number) {
+    this.collaboratorStateService.setLoading(true)
     this.collaboratorService.deactivateMember(this.patientSummary.patientId, memberId).subscribe({
       next: () => {
+        this.collaboratorStateService.setLoading(false)
         this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isCollaboratorActive = false
@@ -140,13 +155,18 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
           return member
         })
+      },
+      error: () => {
+        this.collaboratorStateService.setLoading(false)
       }
     })
   }
 
   activateMember(memberId: number) {
+    this.collaboratorStateService.setLoading(true)
     this.collaboratorService.activateMember(this.patientSummary.patientId, memberId).subscribe({
       next: () => {
+        this.collaboratorStateService.setLoading(false)
         this.collaboratorStateService.members$ = this.members.map(member => {
           if (member.user.userId === memberId) {
             member.isCollaboratorActive = true
@@ -155,6 +175,9 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
 
           return member
         })
+      },
+      error: () => {
+        this.collaboratorStateService.setLoading(false)
       }
     })
   }
@@ -171,5 +194,9 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     this.paginationData.page = page
 
     this.collaboratorStateService.fetchMembers()
+  }
+  
+  handleEditMember(memberId: number) {
+    
   }
 }

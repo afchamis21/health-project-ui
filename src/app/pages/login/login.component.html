@@ -1,3 +1,7 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-atom" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
 <section class="flex flex-col gap-4 items-center w-full px-8">
   <div class="flex flex-col gap-10 p-8 shadow max-w-md w-full bg-slate-50 items-center">
     <h1 class="font-bold text-blue-800 text-2xl">Login</h1>
@@ -22,9 +26,8 @@
         </small>
       </label>
       <button
-        class="btn-primary flex justify-center gap-2" [disabled]="isLoggingIn">
-        {{ isLoggingIn ? "Entrando" : "Entrar" }}
-        <loader-spinner *ngIf="isLoggingIn"></loader-spinner>
+        class="btn-primary flex justify-center gap-2">
+        Entrar
       </button>
     </form>
   </div>

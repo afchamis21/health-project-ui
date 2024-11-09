@@ -1,3 +1,7 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-atom" [fullScreen]="true"
+             [showSpinner]="isSubmittingProfileChanges || isGoingToBillingPortal">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
 <main class="flex-1 flex gap-6 md:gap-10 flex-wrap-reverse items-end container mx-auto p-8">
   <section class="p-4 bg-slate-200 rounded-lg shadow-xl w-full md:flex-[2] md:min-w-[30rem] h-fit">
     <div class="flex justify-between items-center">
@@ -10,11 +14,17 @@
       </button>
     </div>
     <form [formGroup]="editUserForm" class="flex flex-col divide-y divide-slate-300" (submit)="submitForm()">
-      <div class="input-wrapper">
+      <label for="email" class="input-wrapper">
         <span>Email</span>
-        <input [value]="user.email" disabled class="input-primary"/>
-        <small>O email não pode ser alterado.</small>
-      </div>
+        <input class="input-primary" id="email" name="email" formControlName="email" type="email"
+               placeholder="O seu email" autocomplete="email"
+        />
+        <small>Você usará esse email para entrar na aplicação e receber notificações referentes a pagamento</small>
+        <small *ngIf="editUserForm.get('email')?.touched && editUserForm.get('email')?.getError('pattern')"
+               class="error">
+          Email inválido!
+        </small>
+      </label>
       <label for="username" class="input-wrapper">
         <span>Nome de usuário</span>
         <input id="username" type="text" name="username" formControlName="username"
@@ -94,8 +104,10 @@
       </label>
       <button type="submit"
               *ngIf="isEditingProfile"
-              class="btn-primary">
-        Confirmar
+              class="btn-primary"
+              [disabled]="isSubmittingProfileChanges"
+      >
+        <span *ngIf="!isSubmittingProfileChanges">Confirmar</span>
       </button>
     </form>
   </section>
@@ -105,10 +117,9 @@
             class="btn-primary large w-full flex justify-center"
             *ngIf="user.isPaymentActive"
     >
-      <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
+      <span class="flex items-center gap-2">
         <mat-icon>settings</mat-icon> Gerencie sua assinatura
       </span>
-      <loader-spinner *ngIf="isGoingToBillingPortal" color="neutral" size="M"></loader-spinner>
     </button>
     <button
       (click)="goToCheckout()"
@@ -116,10 +127,9 @@
       *ngIf="!user.isPaymentActive"
       class="btn-primary large w-full flex justify-center"
     >
-      <span *ngIf="!isGoingToBillingPortal" class="flex items-center gap-2">
+      <span class="flex items-center gap-2">
         <mat-icon>shopping_bag</mat-icon> Faça um upgrade!
       </span>
-      <loader-spinner *ngIf="isGoingToBillingPortal" color="neutral" size="M"></loader-spinner>
     </button>
   </section>
 </main>

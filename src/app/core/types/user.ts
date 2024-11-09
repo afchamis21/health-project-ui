@@ -18,6 +18,10 @@ export type UserSummary = {
 
 export type GetUserResponse = BaseResponse<User>
 
+export type UpdateUserResponse = BaseResponse<{
+  forcedLogOut: boolean
+}>
+
 export type CompleteRegistrationRequest = {
   username: string,
   password: string,
@@ -25,6 +29,7 @@ export type CompleteRegistrationRequest = {
 }
 
 export type UpdateUserRequest = {
+  email?: string;
   username?: string;
   password?: string;
   confirmPassword?: string;

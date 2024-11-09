@@ -8,22 +8,21 @@ import {NgIf} from "@angular/common";
 import {User} from "../../core/types/user";
 import {MatDialog} from "@angular/material/dialog";
 import {CheckoutDialogComponent, CheckoutDialogOutput} from "./components/checkout-dialog/checkout-dialog.component";
-import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 import {UserStateService} from "../../core/services/user/user-state.service";
+import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     NgIf,
-    SpinnerComponent
+    NgxSpinnerComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
-  isGoingToCheckout = false
   user: User | null = null
 
   constructor(
@@ -32,7 +31,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     protected authService: AuthService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private spinner: NgxSpinnerService
   ) {
     const subscription = userStateService.user$.subscribe(user => this.user = user)
     this.subscriptions.push(subscription)
@@ -63,16 +63,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private goToCheckout(email: string) {
-    this.isGoingToCheckout = true
+    this.spinner.show()
     this.paymentService.checkEmailBelongsToSubscriber(email).subscribe({
       next: value => {
         if (value.body.isUserSubscriber) {
-          this.isGoingToCheckout = false;
+          this.spinner.hide()
           this.toastr.error("Esse email já pertence a um assinante!")
           return
         }
 
         this.paymentService.goToCheckout(email)
+      },
+      error: () => {
+        this.spinner.hide()
       }
     })
   }
@@ -92,6 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.spinner.hide()
     this.subscriptions.forEach(subscription => {
       subscription.unsubscribe()
     })

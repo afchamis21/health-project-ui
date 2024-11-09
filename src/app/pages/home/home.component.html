@@ -1,3 +1,6 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
 <section class="
   bg-opacity-80 w-screen pt-28 pb-16 px-8 flex justify-center align-center hero-banner
   relative after:content-[''] after:absolute after:inset-0 after:bg-slate-800 after:bg-opacity-60
@@ -11,23 +14,19 @@
     <button
       *ngIf="!authService.isLoggedIn"
       (click)="startCheckout()"
-      [disabled]="isGoingToCheckout"
       class="
-      btn-primary disabled:cursor-progress
+      btn-primary
       ">
-      <span *ngIf="!isGoingToCheckout">Cadastre-se</span>
-      <loader-spinner size="S" *ngIf="isGoingToCheckout"></loader-spinner>
+      <span>Cadastre-se</span>
     </button>
     <button
       *ngIf="authService.isLoggedIn && !user?.isPaymentActive"
       (click)="startCheckout()"
-      [disabled]="isGoingToCheckout"
       class="
       mt-4 bg-blue-800 px-6 py-2 rounded-lg text-slate-50 hover:shadow-md hover:shadow-slate-400 transition-all
       disabled:opacity-70 disabled:cursor-progress disabled:hover:shadow-none
       ">
-      <span *ngIf="!isGoingToCheckout">Faça um upgrade!</span>
-      <loader-spinner size="S" *ngIf="isGoingToCheckout"></loader-spinner>
+      <span>Faça um upgrade!</span>
     </button>
     <div
       *ngIf="authService.isLoggedIn && user?.isPaymentActive"

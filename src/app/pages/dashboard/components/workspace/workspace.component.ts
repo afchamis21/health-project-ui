@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Tab, tabs} from "../../../../core/types/tab";
+import {Tab, TabName, tabs} from "../../../../core/types/tab";
 import {User} from "../../../../core/types/user";
 import {NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from "@angular/common";
 import {PatientStateService} from "../../../../core/services/patient/patient-state.service";
@@ -10,6 +10,7 @@ import {MembersTabComponent} from "./tabs/members-tab/members-tab.component";
 import {AttendanceTabComponent} from "./tabs/attendance-tab/attendance-tab.component";
 import {UserStateService} from "../../../../core/services/user/user-state.service";
 import {PatientSummary} from "../../../../core/types/patient";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-workspace',
@@ -31,15 +32,15 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   user: User | null = null;
   patientSummary: PatientSummary | null = null;
 
-  initialTab: Tab = tabs.members;
-
-  selectedTab: Tab | null = this.initialTab;
+  selectedTab: Tab | null = null;
 
   subscriptions: Subscription[] = []
   isClockedIn: boolean = false;
 
   constructor(private patientStateService: PatientStateService,
-              private userStateService: UserStateService
+              private userStateService: UserStateService,
+              private route: ActivatedRoute,
+              private router: Router
   ) {
   }
 
@@ -51,11 +52,27 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
     const patient$ = this.patientStateService.patientSummary$.subscribe(value => {
       this.patientSummary = value
-      this.selectedTab = null
       this.getIsClockedIn()
+
+      if (this.patientSummary && this.selectedTab && this.user) {
+        if (this.selectedTab.ownerOnly && this.patientSummary.ownerId !== this.user.userId)
+          this.selectTab(null)
+      }
     })
 
-    this.subscriptions.push(user$, patient$)
+    const selectTab$ = this.route.queryParams.subscribe(params => {
+      const activeTabName: TabName = params['activeTab'];  // Capture the activeTab parameter
+      if (Object.keys(tabs).includes(activeTabName)) {
+        if (activeTabName === this.selectedTab?.name) {
+          return
+        }
+
+        const activeTab = tabs[activeTabName]
+        this.selectedTab = activeTab
+      }
+    });
+
+    this.subscriptions.push(user$, patient$, selectTab$)
   }
 
   ngOnDestroy(): void {
@@ -76,6 +93,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   selectTab(tab: Tab | null) {
-    this.selectedTab = tab
+    this.router.navigate([], {
+      relativeTo: this.route, 
+      queryParams: { activeTab: tab?.name }, 
+      queryParamsHandling: 'merge', 
+    });
   }
 }

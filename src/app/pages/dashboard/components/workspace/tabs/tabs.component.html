@@ -1,4 +1,5 @@
-<header class="flex flex-wrap border-b-2 gap-1 border-slate-300 p-2 pt-4 md:pt-0 justify-normal">
+<header class="flex border-b-2 gap-1 border-slate-300 p-2 pt-4 md:pt-0 justify-normal overflow-x-auto whitespace-nowrap">
+  <app-clock-out-button></app-clock-out-button>
   <button type="button"
           *ngFor="let tab of filteredTabs"
           (click)="selectTab(tab)"
@@ -10,5 +11,4 @@
   >
     {{ formatDisplayText(tab.displayText) }}
   </button>
-  <app-clock-out-button></app-clock-out-button>
 </header>

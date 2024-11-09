@@ -28,6 +28,10 @@ export class PatientStateService {
         }
       }
 
+      if (patientId == this.patientSummarySubject.value?.patientId) {
+        return
+      }
+
       if (patientId) {
         this.patientService.fetchPatientSummary(patientId).subscribe({
           next: (response => {

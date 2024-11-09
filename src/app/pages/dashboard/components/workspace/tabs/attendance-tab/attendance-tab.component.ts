@@ -1,17 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {PatientCollaboratorName} from "../../../../../../core/types/collaborator";
-import {MatIconModule} from "@angular/material/icon";
-import {NgForOf, NgIf} from "@angular/common";
-import {Subscription} from "rxjs";
-import {CollaboratorStateService} from "../../../../../../core/services/patient/member/collaborator-state.service";
-import {FormsModule} from "@angular/forms";
-import {SubscriptionUtils} from "../../../../../../shared/utils/subscription-utils";
-import {AttendanceStateService} from "../../../../../../core/services/patient/attendance/attendance-state.service";
-import {DateUtils} from "../../../../../../shared/utils/date-utils";
-import {SpinnerComponent} from "../../../../../../shared/components/loader/spinner/spinner.component";
-import {PaginationData} from "../../../../../../core/types/http";
-import {PageControllerComponent} from "../../../../../../shared/components/page-controller/page-controller.component";
-import {Attendance} from "../../../../../../core/types/attendance";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PatientCollaboratorName } from "../../../../../../core/types/collaborator";
+import { MatIconModule } from "@angular/material/icon";
+import { NgForOf, NgIf } from "@angular/common";
+import { Subscription } from "rxjs";
+import { CollaboratorStateService } from "../../../../../../core/services/patient/member/collaborator-state.service";
+import { FormsModule } from "@angular/forms";
+import { SubscriptionUtils } from "../../../../../../shared/utils/subscription-utils";
+import { AttendanceStateService } from "../../../../../../core/services/patient/attendance/attendance-state.service";
+import { DateUtils } from "../../../../../../shared/utils/date-utils";
+import { PaginationData } from "../../../../../../core/types/http";
+import { PageControllerComponent } from "../../../../../../shared/components/page-controller/page-controller.component";
+import { Attendance } from "../../../../../../core/types/attendance";
+import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
+import { formatDuration, intervalToDuration } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 @Component({
   selector: 'app-attendance-tab',
@@ -21,24 +23,29 @@ import {Attendance} from "../../../../../../core/types/attendance";
     NgIf,
     NgForOf,
     FormsModule,
-    SpinnerComponent,
-    PageControllerComponent
+    PageControllerComponent,
+    NgxSpinnerComponent
   ],
   templateUrl: './attendance-tab.component.html',
   styleUrl: './attendance-tab.component.css'
 })
 export class AttendanceTabComponent implements OnInit, OnDestroy {
   members: PatientCollaboratorName[] = [];
-  attendances: Attendance[] = [];
+  attendances: (Attendance & { 
+    duration: string, 
+    displayStart: string, 
+    displayEnd: string 
+  })[] = [];
 
   subscriptions: Subscription[] = [];
 
   selectedMemberId: number | null = 0
-  isLoadingAttendances: boolean = true;
 
   paginationData: PaginationData;
 
-  constructor(private collaboratorStateService: CollaboratorStateService, private attendanceStateService: AttendanceStateService) {
+  constructor(private collaboratorStateService: CollaboratorStateService,
+    private attendanceStateService: AttendanceStateService,
+    private spinner: NgxSpinnerService) {
     this.paginationData = this.attendanceStateService.getPaginationData()
   }
 
@@ -51,12 +58,30 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
 
     const attendancesSubscription = this.attendanceStateService.attendance$.subscribe({
       next: data => {
-        this.attendances = data
+        this.attendances = data?.map(att => {
+          if (!att.clockOutTime) {
+            return { ...att, 
+              displayStart: this.formatDate(att.clockInTime), 
+              displayEnd: '-', 
+              duration: 'Em progresso' 
+            }
+          }
+
+          return { ...att, 
+            displayStart: this.formatDate(att.clockInTime), 
+            displayEnd: this.formatDate(att.clockOutTime), 
+            duration: this.calculateDuration(att) 
+          }
+        })
       }
     })
 
     const loadingAttendancesSubscription = this.attendanceStateService.isLoading$.subscribe(data => {
-      this.isLoadingAttendances = data
+      if (data) {
+        this.spinner.show()
+      } else {
+        this.spinner.hide()
+      }
     })
 
     this.subscriptions.push(memberSubscription, attendancesSubscription, loadingAttendancesSubscription)
@@ -64,6 +89,7 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     SubscriptionUtils.unsubscribe(this.subscriptions)
+    this.spinner.hide()
   }
 
   handleFilterAttendances() {
@@ -87,5 +113,11 @@ export class AttendanceTabComponent implements OnInit, OnDestroy {
     this.paginationData.page = page;
 
     this.attendanceStateService.fetchAttendances(this.selectedMemberId)
+  }
+
+  calculateDuration({ clockInTime: start, clockOutTime: end }: Attendance) {
+    const duration = intervalToDuration({ start, end });
+
+    return formatDuration(duration, { locale: ptBR });
   }
 }

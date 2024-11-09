@@ -8,8 +8,8 @@ import {User} from "../../core/types/user";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {SubscriptionUtils} from "../../shared/utils/subscription-utils";
-import {SpinnerComponent} from "../../shared/components/loader/spinner/spinner.component";
 import {UserStateService} from "../../core/services/user/user-state.service";
+import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-login',
@@ -17,29 +17,30 @@ import {UserStateService} from "../../core/services/user/user-state.service";
   imports: [
     ReactiveFormsModule,
     NgIf,
-    SpinnerComponent
+    NgxSpinnerComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
-  isLoggingIn = false
 
   constructor(
     private userStateService: UserStateService,
     private authService: AuthService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private spinner: NgxSpinnerService
   ) {
   }
 
   ngOnDestroy(): void {
     SubscriptionUtils.unsubscribe(this.subscriptions)
+    this.spinner.hide()
   }
 
   ngOnInit(): void {
-    const subscription = this.userStateService.user$.subscribe(value => this.user = value)
+     const subscription = this.userStateService.user$.subscribe(value => this.user = value)
     this.subscriptions.push(subscription)
   }
 
@@ -61,16 +62,16 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this.loginForm.get('password')?.value!,
     }
 
-    this.isLoggingIn = true
+    this.spinner.show()
 
     const subscription = this.authService.login(formData).subscribe({
       next: () => {
-        this.isLoggingIn = false
+        this.spinner.hide()
         this.toastr.success("Logado com sucesso!")
         this.router.navigate(['/dashboard'])
       },
       error: () => {
-        this.isLoggingIn = false
+        this.spinner.hide()
         this.loginForm.controls.password.setValue('')
       }
     })

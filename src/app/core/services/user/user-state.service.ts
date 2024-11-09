@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserService} from "./user.service";
 import {AttendanceService} from "../patient/attendance/attendance.service";
-import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
+import {BehaviorSubject, firstValueFrom, map, Observable} from "rxjs";
 import {CompleteRegistrationRequest, UpdateUserRequest, User} from "../../types/user";
 import {AuthService} from "../auth/auth.service";
 import {ToastrService} from "ngx-toastr";
@@ -74,12 +74,15 @@ export class UserStateService {
   }
 
   handleUpdateUser(data: UpdateUserRequest) {
-    this.userService.updateUser(data).subscribe({
-      next: () => {
+    return this.userService.updateUser(data).pipe(
+      map((res) => {
         this.toastr.info("Usuário atualizado com sucesso!")
-        this.authService.forceLogout()
-      }
-    })
+        if (res.body.forcedLogOut) {
+          this.authService.forceLogout()
+          this.userSubject.next(null)
+        }
+      })
+    )
   }
 
   handleCompleteRegistration(data: CompleteRegistrationRequest) {

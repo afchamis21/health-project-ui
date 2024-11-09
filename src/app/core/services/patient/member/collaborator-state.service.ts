@@ -82,15 +82,18 @@ export class CollaboratorStateService {
       return
     }
 
-    this.loadingSubject.next(true);
+    this.setLoading(true);
     const sub = this.collaboratorService.getMembers(this.patientSummary.patientId, this.paginationData).subscribe({
       next: (value) => {
-        this.loadingSubject.next(false);
+        this.setLoading(false);
 
         this.membersSubject.next(value.body.data)
         this.paginationData.lastPage = value.body.lastPage
 
         sub.unsubscribe()
+      },
+      error:() => {
+        this.setLoading(false)
       }
     })
   }
@@ -105,5 +108,9 @@ export class CollaboratorStateService {
         sub.unsubscribe()
       }
     })
+  }
+
+  setLoading(loading: boolean) {
+    this.loadingSubject.next(loading)
   }
 }

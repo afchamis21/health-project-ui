@@ -1,64 +1,95 @@
-<header class="flex gap-4 flex-wrap justify-between">
+<header class="flex gap-4 flex-wrap justify-between mb-2">
   <h2 class="text-2xl">Lista de colaboradores</h2>
   <div class="">
-    <button *ngIf="isOwner"
-            class="bg-slate-300 p-2 rounded flex items-center gap-2 hover:bg-blue-800 hover:text-slate-50 transition-colors
+    <button *ngIf="isOwner" class="bg-slate-300 p-2 rounded flex items-center gap-2 hover:bg-blue-800 hover:text-slate-50 transition-colors
             disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-slate-300 disabled:hover:text-slate-950"
-            (click)="addCollaboratorToPatient()"
-    >
+      (click)="addCollaboratorToPatient()">
       <mat-icon [inline]="true">add</mat-icon>
       <span>Adicionar colaborador</span>
     </button>
   </div>
 </header>
 
-<ul class="divide-y divide-slate-300 mt-8 flex-1" *ngIf="!isLoadingMembers">
-  <li *ngFor="let member of members" class="py-2 flex justify-between items-baseline gap-6 flex-wrap">
-    <span>{{ member.user.username }} <span *ngIf="member.user.userId !== patientSummary.ownerId"
-                                           class="text-xs text-slate-400">({{ member.user.email }})</span></span>
-    <div class="flex flex-col-reverse items-end md:flex-row md:gap-6">
-      <div *ngIf="isOwner && member.user.userId !== patientSummary.ownerId">
-        <button
-          class="action-button hover:text-green-700 transition-colors"
-          *ngIf="!member.isCollaboratorActive"
-          (click)="activateMember(member.user.userId)"
-        >
-          <mat-icon [inline]="true">check</mat-icon>
-          Ativar
-        </button>
-        <button
-          class="action-button hover:text-red-700 transition-colors"
-          *ngIf="member.isCollaboratorActive"
-          (click)="deactivateMember(member.user.userId)"
-        >
-          <mat-icon [inline]="true">block</mat-icon>
-          Desativar
-        </button>
-      </div>
-      <span
-        *ngIf="member.user.userId === patientSummary.ownerId"
-        class="tag bg-slate-800 text-slate-100">Dono</span>
-      <span
-        *ngIf="member.user.userId !== patientSummary.ownerId && member.isCollaboratorActive"
-        class="tag bg-green-700 text-slate-50">Ativo
-      </span>
-      <span
-        *ngIf="member.user.userId !== patientSummary.ownerId && !member.isCollaboratorActive"
-        class="tag bg-red-700 text-slate-50">Inativo
-      </span>
-    </div>
-  </li>
-</ul>
+<div class="overflow-x-auto mt-8">
+  <table *ngIf="!isLoadingMembers" class="table-auto w-full divide-y divide-slate-300">
+    <thead class="bg-slate-100">
+      <!-- Table headers -->
+      <tr>
+        <th class="text-left px-4 py-2">Usuário</th>
+        <th class="text-left px-4 py-2 hidden lg:table-cell">Email</th> <!-- Email column hidden on small screens -->
+        <th class="text-left px-4 py-2 hidden sm:table-cell">Descrição</th> <!-- Description column visible from sm onwards -->
+        <th class="text-left px-4 py-2">Status</th> <!-- Status column visible from sm onwards -->
+        <th class="text-left px-4 py-2">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Iterate through the members and create a row for each -->
+      <tr *ngFor="let member of members" class="border-b">
+        <!-- Username -->
+        <td class="px-4 py-2">
+          {{ member.user.username }}
+        </td>
 
-<app-page-controller
-  *ngIf="!isLoadingMembers"
-  [currentPage]="paginationData.page"
-  [lastPage]="paginationData.lastPage"
-  [controllerSize]="paginationData.maxPages" (onNextPage)="handleNextPage()"
-  (onPreviousPage)="handlePreviousPage()"
-  (onSpecificPage)="handleSpecificPage($event)"
-></app-page-controller>
+        <!-- Email -->
+        <td class="px-4 py-2 hidden lg:table-cell"> <!-- Hidden on small and medium screens -->
+          <!-- Show email only if user is not the owner -->
+          <span *ngIf="member.user.userId !== patientSummary.ownerId" class="text-xs text-slate-400">
+            {{ member.user.email }}
+          </span>
+        </td>
 
-<div class="flex-1 flex items-center justify-center" *ngIf="isLoadingMembers">
-  <loader-spinner *ngIf="isLoadingMembers" color="primary" size="M"></loader-spinner>
+        <!-- Description (visible from sm and up) -->
+        <td class="px-4 py-2 hidden sm:table-cell">
+          {{ member?.description || '-' }}
+        </td>
+
+        <!-- Status display -->
+        <td class="px-4 py-2">
+          <!-- Display "Owner" tag if the user is the owner -->
+          <span *ngIf="member.user.userId === patientSummary.ownerId" class="tag bg-slate-800 text-slate-100">
+            Dono
+          </span>
+          <!-- Display "Active" tag if the user is an active collaborator -->
+          <span *ngIf="member.user.userId !== patientSummary.ownerId && member.isCollaboratorActive"
+            class="tag bg-green-700 text-slate-50">
+            Ativo
+          </span>
+          <!-- Display "Inactive" tag if the user is not an active collaborator -->
+          <span *ngIf="member.user.userId !== patientSummary.ownerId && !member.isCollaboratorActive"
+            class="tag bg-red-700 text-slate-50">
+            Inativo
+          </span>
+        </td>
+
+        <!-- Actions (Activate/Deactivate buttons) -->
+        <td class="px-4 py-2 flex gap-4">
+          <!-- Edit button if the user is the owner -->
+          <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId"
+            class="action-button hover:text-green-700 transition-colors" (click)="handleEditMember(member.user.userId)">
+            <mat-icon [inline]="true">edit</mat-icon> Editar
+          </button>
+
+          <!-- Activate button if the user is the owner and the member is not active -->
+          <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && !member.isCollaboratorActive"
+            class="action-button hover:text-green-700 transition-colors" (click)="activateMember(member.user.userId)">
+            <mat-icon [inline]="true">check</mat-icon> Ativar
+          </button>
+
+          <!-- Deactivate button if the user is the owner and the member is active -->
+          <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && member.isCollaboratorActive"
+            class="action-button hover:text-red-700 transition-colors" (click)="deactivateMember(member.user.userId)">
+            <mat-icon [inline]="true">block</mat-icon> Desativar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+
+<ngx-spinner class="flex-1 relative" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" size="medium" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
+
+<app-page-controller *ngIf="!isLoadingMembers" [currentPage]="paginationData.page" [lastPage]="paginationData.lastPage"
+  [controllerSize]="paginationData.maxPages" (onNextPage)="handleNextPage()" (onPreviousPage)="handlePreviousPage()"
+  (onSpecificPage)="handleSpecificPage($event)"></app-page-controller>

@@ -70,6 +70,9 @@ export class AttendanceStateService {
         this.loadingSubject.next(false)
 
         sub.unsubscribe()
+      },
+      error: () => {
+        this.loadingSubject.next(false)
       }
     })
   }

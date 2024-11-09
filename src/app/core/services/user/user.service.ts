@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {CompleteRegistrationRequest, GetUserResponse, UpdateUserRequest} from "../../types/user";
+import {CompleteRegistrationRequest, GetUserResponse, UpdateUserRequest, UpdateUserResponse} from "../../types/user";
 import {environment} from "../../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {CreatePatientRequest, GetPatientSummariesResponse, GetPatientSummaryResponse} from "../../types/patient";
-import {PaginationData} from "../../types/http";
-import {CreateCollaboratorRequest, GetCollaboratorResponse} from "../../types/collaborator";
+import {BaseResponse, PaginationData} from "../../types/http";
+import {CreateCollaboratorRequest, GetCollaboratorResponse, UpdateCollaboratorRequest} from "../../types/collaborator";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class UserService {
   }
 
   updateUser(data: UpdateUserRequest) {
-    return this.httpClient.put<GetUserResponse>(this.baseUrl + "/update", data)
+    return this.httpClient.put<UpdateUserResponse>(this.baseUrl + "/update", data)
   }
 
   completeRegistration(request: CompleteRegistrationRequest) {
@@ -42,5 +42,9 @@ export class UserService {
 
   addCollaboratorToPatient(data: CreateCollaboratorRequest) {
     return this.httpClient.post<GetCollaboratorResponse>(`${this.baseUrl}/patient/collaborator`, data)
+  }
+
+  updateCollaborator(data: UpdateCollaboratorRequest) {
+    return this.httpClient.put<BaseResponse<void>>(`${this.baseUrl}/patient/collaborator`, data)
   }
 }

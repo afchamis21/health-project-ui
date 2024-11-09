@@ -15,30 +15,46 @@
   </form>
 </header>
 
-<div class="table-wrapper relative">
-  <table>
-    <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Entrada</th>
-      <th>Saída</th>
-    </tr>
+<div class="overflow-x-auto mt-8">
+  <table *ngIf="attendances.length > 0" class="table-auto w-full divide-y divide-slate-300">
+    <thead class="bg-slate-100">
+      <tr>
+        <th class="text-left px-4 py-2">Nome</th>
+        <th class="text-left px-4 py-2 hidden sm:table-cell">Entrada</th>
+        <th class="text-left px-4 py-2 hidden sm:table-cell">Saída</th>
+        <th class="text-left px-4 py-2">Duração</th>
+      </tr>
     </thead>
-    <tbody *ngIf="!isLoadingAttendances">
-    <tr *ngFor="let attendance of attendances">
-      <td>{{ attendance.username }}</td>
-      <td>{{ formatDate(attendance.clockInTime) }}</td>
-      <td>{{ attendance.clockOutTime ? formatDate(attendance.clockOutTime) : "-" }}</td>
-    </tr>
-    <tr *ngIf="attendances.length === 0">
-      <td>Não há nada para mostrar no histórico</td>
-    </tr>
+    <tbody>
+      <tr *ngFor="let attendance of attendances" class="border-b">
+        <td class="px-4 py-2">
+          {{ attendance.username }}
+        </td>
+
+        <td class="px-4 py-2 hidden sm:table-cell">
+          {{ attendance.displayStart }}
+        </td>
+
+        <td class="px-4 py-2 hidden sm:table-cell">
+          {{ attendance.displayEnd }}
+        </td>
+
+        <td class="px-4 py-2">
+          {{ attendance.duration || '-' }}
+        </td>
+      </tr>
     </tbody>
   </table>
-  <div *ngIf="isLoadingAttendances" class="absolute w-fit top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
-    <loader-spinner size="G" color="primary"></loader-spinner>
+
+  <div *ngIf="attendances.length === 0" class="text-center py-4 text-gray-500">
+    Não há nada para mostrar no histórico
   </div>
 </div>
+
+
+<ngx-spinner class="flex-1 relative" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" size="medium" [fullScreen]="true">
+  <p style="color: white"> Carregando... </p>
+</ngx-spinner>
 
 <app-page-controller
   [currentPage]="paginationData.page"
