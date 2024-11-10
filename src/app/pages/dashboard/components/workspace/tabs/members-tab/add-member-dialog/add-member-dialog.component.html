@@ -12,6 +12,7 @@
     <label for="email" class="flex flex-col">
       <span class="text-sm">Email</span>
       <input
+        type="email"
         formControlName="email"
         id="email"
         name="email"
@@ -25,6 +26,21 @@
       <small *ngIf="addMemberForm.get('email')?.touched && addMemberForm.get('email')?.getError('email')"
              class="error">
         Insira um email válido.
+      </small>
+    </label>
+    <label for="description" class="flex flex-col">
+      <span class="text-sm">Descrição</span>
+      <input
+        type="text"
+        formControlName="description"
+        id="description"
+        name="description"
+        placeholder="Ex: enfermeira, fisioterapeuta, familiar..."
+        class="input-primary"
+      >
+      <small *ngIf="addMemberForm.get('description')?.touched && addMemberForm.get('description')?.getError('required')"
+             class="error">
+        Este campo é obrigatório.
       </small>
     </label>
     <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800">Adicionar</button>

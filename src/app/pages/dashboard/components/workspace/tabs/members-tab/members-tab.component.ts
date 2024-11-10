@@ -16,6 +16,7 @@ import {CollaboratorService} from "../../../../../../core/services/patient/membe
 import {UserStateService} from "../../../../../../core/services/user/user-state.service";
 import {PatientSummary} from "../../../../../../core/types/patient";
 import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-members-tab',
@@ -26,7 +27,8 @@ import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
     MatIconModule,
     NgClass,
     PageControllerComponent,
-    NgxSpinnerComponent
+    NgxSpinnerComponent,
+    FormsModule
   ],
   templateUrl: './members-tab.component.html',
   styleUrl: './members-tab.component.css'
@@ -34,7 +36,6 @@ import {NgxSpinnerComponent, NgxSpinnerService} from "ngx-spinner";
 export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   @Input() patientSummary!: PatientSummary
   members: Collaborator[] = []
-
 
   user: User | null = null
 
@@ -45,6 +46,8 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
   paginationData: PaginationData;
 
   isLoadingMembers = false;
+
+  isEditingCollaboratorMap: Record<number, boolean> = {}
 
   constructor(
     private collaboratorService: CollaboratorService,
@@ -78,6 +81,10 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
           }
 
           return -1
+        })
+
+        this.members.forEach(m => {
+          this.isEditingCollaboratorMap[m.user.userId] = false
         })
       }
     })
@@ -123,7 +130,8 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
         this.collaboratorStateService.setLoading(true)
         this.userService.addCollaboratorToPatient({
           email: value.value.email,
-          patientId: this.patientSummary.patientId
+          patientId: this.patientSummary.patientId,
+          description: value.value.description
         }).subscribe({
           next: (data) => {
             this.collaboratorStateService.fetchMembers()
@@ -196,7 +204,30 @@ export class MembersTabComponent implements OnInit, OnDestroy, OnChanges {
     this.collaboratorStateService.fetchMembers()
   }
   
-  handleEditMember(memberId: number) {
-    
+  handleEditMember(collaboratorId: number) {
+    this.isEditingCollaboratorMap[collaboratorId] = true
+  }
+
+  handleUpdateMember(collaborator: Collaborator) {
+    this.spinner.show()
+    this.userService.updateCollaborator({
+      description: collaborator.description,
+      patientId: collaborator.patientId,
+      userId: collaborator.user.userId
+    }).subscribe({
+      next: () => {
+        this.toastr.success("Dados do colaborador atualizados com sucesso!")
+        this.spinner.hide()
+        this.isEditingCollaboratorMap[collaborator.user.userId] = false
+      },
+      error: () => {
+        this.spinner.hide()
+        this.isEditingCollaboratorMap[collaborator.user.userId] = false
+      }
+    })
+  }
+
+  cancelUpdateMember(collaboratorId: number) {
+    this.isEditingCollaboratorMap[collaboratorId] = false
   }
 }

@@ -4,7 +4,7 @@ import {BaseResponse, PaginatedResponse} from "./http";
 export type Collaborator = {
   patientId: number
   isCollaboratorActive: boolean
-  description?: string
+  description: string
   createDt: Date
   user: UserSummary
 }
@@ -18,6 +18,7 @@ export type GetCollaboratorsNamesResponse = BaseResponse<PatientCollaboratorName
 export type CreateCollaboratorRequest = {
   email: string
   patientId: number
+  description: string
 }
 
 export type GetCollaboratorResponse = BaseResponse<Collaborator>

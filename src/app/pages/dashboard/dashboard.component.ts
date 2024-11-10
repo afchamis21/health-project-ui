@@ -109,7 +109,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   openCompleteRegistrationDialog() {
-    const dialogRef = this.dialog.open(CompleteRegistrationDialogComponent)
+    const dialogRef = this.dialog.open(CompleteRegistrationDialogComponent, {
+      disableClose: true
+    })
 
     dialogRef.afterClosed().subscribe((value: CompleteRegistrationDialog) => {
       if (!value.complete) {
@@ -126,7 +128,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   createPatient() {
-    const dialogRef = this.dialog.open(CreatePatientDialogComponent)
+    const dialogRef = this.dialog.open(CreatePatientDialogComponent, {
+      disableClose: true
+    })
 
     dialogRef.afterClosed().subscribe((value: CreatePatientDialogReturn) => {
       if (value.complete) {

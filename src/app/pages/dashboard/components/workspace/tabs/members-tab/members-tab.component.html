@@ -39,8 +39,19 @@
         </td>
 
         <!-- Description (visible from sm and up) -->
-        <td class="px-4 py-2 hidden sm:table-cell">
+        <td class="px-4 py-2 hidden sm:table-cell" *ngIf="!isEditingCollaboratorMap[member.user.userId]">
           {{ member?.description || '-' }}
+        </td>
+        <td class="px-4 py-2 hidden sm:table-cell" *ngIf="isEditingCollaboratorMap[member.user.userId]">
+          <input
+            type="text"
+            [(ngModel)]="member.description"
+            id="description"
+            name="description"
+            placeholder="Ex: enfermeira, fisioterapeuta, familiar..."
+            class="input-primary w-full text-sm"
+            (keydown.enter)="handleUpdateMember(member)"
+          >
         </td>
 
         <!-- Status display -->
@@ -62,12 +73,22 @@
         </td>
 
         <!-- Actions (Activate/Deactivate buttons) -->
-        <td class="px-4 py-2 flex gap-4">
+        <td class="px-4 py-2 flex gap-4 items-start">
           <!-- Edit button if the user is the owner -->
-          <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId"
-            class="action-button hover:text-green-700 transition-colors" (click)="handleEditMember(member.user.userId)">
-            <mat-icon [inline]="true">edit</mat-icon> Editar
-          </button>
+          <div class="hidden sm:table-cell">
+            <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && !isEditingCollaboratorMap[member.user.userId]"
+              class="action-button hover:text-green-700 transition-colors" (click)="handleEditMember(member.user.userId)">
+              <mat-icon [inline]="true">edit</mat-icon> Editar
+            </button>
+            <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && isEditingCollaboratorMap[member.user.userId]"
+              class="action-button hover:text-green-700 transition-colors" (click)="handleUpdateMember(member)">
+              <mat-icon [inline]="true">check</mat-icon> Salvar
+            </button>
+            <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && isEditingCollaboratorMap[member.user.userId]"
+              class="action-button hover:text-red-700 transition-colors" (click)="cancelUpdateMember(member.user.userId)">
+              <mat-icon [inline]="true">cancel</mat-icon> Cancelar
+            </button>
+          </div>
 
           <!-- Activate button if the user is the owner and the member is not active -->
           <button *ngIf="isOwner && member.user.userId !== patientSummary.ownerId && !member.isCollaboratorActive"

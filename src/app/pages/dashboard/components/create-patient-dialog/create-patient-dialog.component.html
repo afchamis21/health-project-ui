@@ -13,7 +13,7 @@
           formControlName="name"
           id="name"
           name="name"
-          placeholder="Primeiro nome"
+          placeholder="João"
           class="input-primary"
         >
         <small *ngIf="createPatientForm.get('name')?.touched && createPatientForm.get('name')?.getError('required')"
@@ -27,12 +27,11 @@
           formControlName="surname"
           id="surname"
           name="surname"
-          placeholder="Sobrenome"
+          placeholder="Silva"
           class="input-primary"
         >
-        <small
-          *ngIf="createPatientForm.get('surname')?.touched && createPatientForm.get('surname')?.getError('required')"
-          class="error">
+        <small *ngIf="createPatientForm.get('surname')?.touched && createPatientForm.get('surname')?.getError('required')"
+               class="error">
           Este campo é obrigatório.
         </small>
       </label>
@@ -46,7 +45,7 @@
           name="gender"
           class="input-primary-select"
         >
-          <option [value]="null" disabled>O sexo do paciente</option>
+          <option [value]="null" disabled>Selecionar sexo</option>
           <option value="MALE">Masculino</option>
           <option value="FEMALE">Feminino</option>
           <option value="NOT_SPECIFIED">Prefiro não informar</option>
@@ -64,10 +63,10 @@
           name="dateOfBirth"
           class="input-primary-date"
           type="date"
+          placeholder="dd/mm/aaaa"
         >
-        <small
-          *ngIf="createPatientForm.get('dateOfBirth')?.touched && createPatientForm.get('dateOfBirth')?.getError('required')"
-          class="error">
+        <small *ngIf="createPatientForm.get('dateOfBirth')?.touched && createPatientForm.get('dateOfBirth')?.getError('required')"
+               class="error">
           Este campo é obrigatório.
         </small>
       </label>
@@ -78,22 +77,19 @@
         formControlName="rg"
         id="rg"
         name="rg"
-        placeholder="O RG do paciente"
+        placeholder="Ex: 12.345.678-9"
         class="input-primary"
       >
-      <small
-        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('required')"
-        class="error">
+      <small *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('required')"
+             class="error">
         Este campo é obrigatório.
       </small>
-      <small
-        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('pattern')"
-        class="error">
-        Formato inválido. Ex: XX.XXX.XXX-X
+      <small *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('pattern')"
+             class="error">
+        Formato inválido. Ex: 12.345.678-9
       </small>
-      <small
-        *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('rg')"
-        class="error">
+      <small *ngIf="createPatientForm.get('rg')?.touched && createPatientForm.get('rg')?.getError('rg')"
+             class="error">
         RG inválido.
       </small>
     </label>
@@ -102,23 +98,20 @@
       <input
         formControlName="cpf"
         id="cpf"
-        name="rg"
-        placeholder="O CPF do paciente"
+        name="cpf"
+        placeholder="Ex: 123.456.789-00"
         class="input-primary"
       >
-      <small
-        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('required')"
-        class="error">
+      <small *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('required')"
+             class="error">
         Este campo é obrigatório.
       </small>
-      <small
-        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('pattern')"
-        class="error">
-        Formato inválido. Ex: XXX.XXX.XXX-XX
+      <small *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('pattern')"
+             class="error">
+        Formato inválido. Ex: 123.456.789-00
       </small>
-      <small
-        *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('cpf')"
-        class="error">
+      <small *ngIf="createPatientForm.get('cpf')?.touched && createPatientForm.get('cpf')?.getError('cpf')"
+             class="error">
         CPF inválido.
       </small>
     </label>
@@ -128,22 +121,19 @@
         formControlName="contactPhone"
         id="contactPhone"
         name="contactPhone"
-        placeholder="O telefone do paciente"
+        placeholder="(11) 91234-5678"
         class="input-primary"
         (input)="handleFormatPhone($event)"
       >
-      <small
-        *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('required')"
-        class="error">
+      <small *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('required')"
+             class="error">
         Este campo é obrigatório.
       </small>
-      <small
-        *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('pattern')"
-        class="error">
+      <small *ngIf="createPatientForm.get('contactPhone')?.touched && createPatientForm.get('contactPhone')?.getError('pattern')"
+             class="error">
         Formato inválido. Ex: (11) 91234-5678
       </small>
     </label>
-    <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800 mb-8">Adicionar
-    </button>
+    <button type="submit" class="bg-blue-950 p-2 text-slate-50 transition-colors hover:bg-blue-800 mb-8">Adicionar</button>
   </form>
 </section>

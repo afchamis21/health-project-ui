@@ -10,6 +10,7 @@ export type AddMemberDialogReturn = {
   complete: true,
   value: {
     email: string
+    description: string
   }
 }
 
@@ -30,7 +31,8 @@ export class AddMemberDialogComponent {
   }
 
   addMemberForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email])
+    email: new FormControl('', [Validators.required, Validators.email]),
+    description: new FormControl('', [Validators.required])
   })
 
   close() {
@@ -49,6 +51,7 @@ export class AddMemberDialogComponent {
       complete: true,
       value: {
         email: this.addMemberForm.controls.email.value!,
+        description: this.addMemberForm.controls.description.value!,
       }
     })
   }
